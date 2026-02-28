@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#FFE4E1"/>
+      <stop offset="1" stop-color="#FFD1DC"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#g)" />
+  <g transform="translate(150,120)">
+    <ellipse cx="450" cy="420" rx="310" ry="140" fill="#fff" opacity="0.25" />
+    <g fill="#3B3B3B">
+      <path d="M450 80c-90 0-140 60-140 140 0 100 90 200 140 200s140-100 140-200c0-80-50-140-140-140z"/>
+      <path d="M320 200c15-40 55-70 130-70s115 30 130 70c-55 35-155 35-260 0z"/>
+    </g>
+    <text x="450" y="520" font-family="Georgia, serif" font-size="48" text-anchor="middle" fill="#4A4A4A">Kadın Kuaför</text>
+    <text x="450" y="570" font-family="Inter, sans-serif" font-size="20" text-anchor="middle" fill="#6B6B6B">Profesyonel saç kesimi & renklendirme</text>
+  </g>
+</svg>

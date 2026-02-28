@@ -1,0 +1,31 @@
+{
+  "name": "marlenqacouture",
+  "version": "1.0.0",
+  "description": "Su Perisi Güzellik Salonu - Saç Kesimi, Renklendirme & Özel Gün Hizmetleri",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "node ./node_modules/eslint/bin/eslint.js . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.95.3",
+    "clsx": "^2.0.0",
+    "framer-motion": "^10.16.4",
+    "next": "^16.1.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.55.0",
+    "eslint-config-next": "^14.0.0",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.3.0"
+  }
+}
