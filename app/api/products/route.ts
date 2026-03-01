@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import {
   FallbackProductRow,
   readFallbackProductsData,
@@ -84,6 +85,19 @@ const sanitizeProductPayload = <T extends Record<string, unknown>>(product: T): 
   delete payload.service_details
 
   return payload as T
+}
+
+const revalidateProductRelatedPaths = (slugOrId?: string) => {
+  try {
+    revalidatePath('/')
+    revalidatePath('/koleksiyonlar')
+    revalidatePath('/admin/products')
+    if (slugOrId) {
+      revalidatePath(`/urun/${slugOrId}`)
+    }
+  } catch (error) {
+    console.warn('Product path revalidation failed:', error)
+  }
 }
 
 async function getLatestSettingValueByKey(key: string): Promise<unknown | null> {
@@ -252,6 +266,7 @@ export async function POST(req: NextRequest) {
         delete fallbackData.serviceDetailsMap[id]
       }
       await writeFallbackProductsData(fallbackData)
+      revalidateProductRelatedPaths(typeof created.slug === 'string' ? created.slug : created.id)
 
       return NextResponse.json(
         {
@@ -271,6 +286,7 @@ export async function POST(req: NextRequest) {
     if (data?.id) {
       await persistProductServiceDetails(data.id, serviceDetails)
     }
+    revalidateProductRelatedPaths(typeof data?.slug === 'string' ? data.slug : data?.id)
 
     return NextResponse.json({ ...data, service_details: serviceDetails }, { status: 201 })
   } catch {
@@ -310,6 +326,11 @@ export async function PUT(req: NextRequest) {
         delete fallbackData.serviceDetailsMap[id]
       }
       await writeFallbackProductsData(fallbackData)
+      const revalidateSlug =
+        (typeof updated.slug === 'string' && updated.slug) ||
+        (typeof current.slug === 'string' && current.slug) ||
+        id
+      revalidateProductRelatedPaths(revalidateSlug)
 
       return NextResponse.json({
         ...updated,
@@ -324,6 +345,8 @@ export async function PUT(req: NextRequest) {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
     await persistProductServiceDetails(id, serviceDetails)
+    const revalidateSlug = (typeof data?.slug === 'string' && data.slug) || id
+    revalidateProductRelatedPaths(revalidateSlug)
 
     return NextResponse.json({ ...data, service_details: serviceDetails })
   } catch {
@@ -344,9 +367,15 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ error: 'Product not found' }, { status: 404 })
       }
 
+      const deleted = fallbackData.products[index]
       fallbackData.products.splice(index, 1)
       delete fallbackData.serviceDetailsMap[id]
       await writeFallbackProductsData(fallbackData)
+      const revalidateSlug =
+        (deleted && typeof deleted.slug === 'string' && deleted.slug) ||
+        (deleted && typeof deleted.id === 'string' && deleted.id) ||
+        id
+      revalidateProductRelatedPaths(revalidateSlug)
       return NextResponse.json({ success: true })
     }
 
@@ -357,6 +386,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     await persistProductServiceDetails(id, [])
+    revalidateProductRelatedPaths(id)
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 })
