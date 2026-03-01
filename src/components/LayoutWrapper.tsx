@@ -19,12 +19,12 @@ export function LayoutWrapper({ children, settings }: LayoutWrapperProps) {
     }
 
     return (
-        <>
+        <div className="site-shell">
             <Header settings={settings} />
             <div className="pt-[84px]">
                 {children}
             </div>
             <Footer settings={settings} />
-        </>
+        </div>
     )
 }

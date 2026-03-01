@@ -19,7 +19,7 @@ export function HeroSection({ hero }: { hero?: HomepageData }) {
   const heroImage = heroData.hero_image || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=2000'
 
   return (
-    <section className="relative flex min-h-[88vh] items-end overflow-hidden pb-16 pt-32 md:min-h-screen md:pb-20">
+    <section className="relative flex min-h-[calc(100vh-84px)] items-end overflow-hidden pb-12 pt-20 md:pb-16 md:pt-24">
       <Image
         src={heroImage}
         alt={heroData.hero_title || 'Su Perisi Güzellik Salonu'}
@@ -41,7 +41,7 @@ export function HeroSection({ hero }: { hero?: HomepageData }) {
           transition={{ duration: 0.75, ease: 'easeOut' }}
           className="max-w-3xl"
         >
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-white/65">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-white/65">
             Su Perisi Güzellik Salonu
           </p>
 
@@ -49,11 +49,11 @@ export function HeroSection({ hero }: { hero?: HomepageData }) {
             {heroData.hero_title}
           </h1>
 
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/80 md:text-lg">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/80 md:text-lg">
             {heroData.hero_subtitle}
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
               href={heroData.hero_cta_link || '/koleksiyonlar'}
               className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-semibold uppercase tracking-[0.15em] text-[#101217] transition hover:bg-[#ebebeb]"
