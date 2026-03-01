@@ -11,8 +11,11 @@ interface FeaturedGridProps {
   subtitle?: string
 }
 
-export function FeaturedGrid({ products, title = 'Öne Çıkan Modeller', subtitle = 'Salonumuzu öne çıkan saç hizmetlerinden seçmeler' }: FeaturedGridProps) {
-  // Use passed products directly
+export function FeaturedGrid({
+  products,
+  title = 'Öne Çıkan Hizmetler',
+  subtitle = 'Kentpark çizgisini modern bir yorumla birleştiren popüler işlemler',
+}: FeaturedGridProps) {
   const displayProducts = products
 
   const getFirstValidImage = (images: string[] | undefined) => {
@@ -22,103 +25,93 @@ export function FeaturedGrid({ products, title = 'Öne Çıkan Modeller', subtit
   }
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-cream">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-[#f2f1ef] py-16 sm:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.55 }}
+          className="mb-10 rounded-3xl border border-white bg-white p-7 shadow-[0_18px_60px_rgba(0,0,0,0.08)] md:mb-14 md:p-10"
         >
-          <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-            {title}
-          </h2>
-          <p className="text-gray-600 text-lg">
-            {subtitle}
-          </p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-[#6b6f78]">Hizmetlerimiz</p>
+          <h2 className="text-3xl font-serif font-semibold uppercase tracking-[0.04em] text-[#0f1115] md:text-5xl">{title}</h2>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#656a73] md:text-base">{subtitle}</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayProducts.length > 0 ? (
-            displayProducts.slice(0, 6).map((product, index) => {
+        {displayProducts.length > 0 ? (
+          <div className="grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-3">
+            {displayProducts.slice(0, 6).map((product, index) => {
               const previewImage = getFirstValidImage(product.images)
 
               return (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Link href={`/urun/${product.slug}`}>
-                  <div className="group cursor-pointer">
-                    {/* Image Container */}
-                    <div className="relative h-96 overflow-hidden rounded-lg mb-4 bg-slate-100 border border-slate-200 p-2 flex items-center justify-center">
-                      {previewImage ? (
-                        <Image
-                          src={previewImage}
-                          alt={product.name}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          quality={70}
-                          className="rounded-md object-contain p-2 transition-transform duration-300 group-hover:scale-[1.02]"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <span className="text-sm">Gorsel Yok</span>
-                        </div>
-                      )}
-                      {/* Tag Overlay */}
-                      <div className="absolute top-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-xs font-semibold">
-                        {product.tags && product.tags.length ? product.tags[0] : 'Hizmet'}
-                      </div>
-                    </div>
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.55, delay: index * 0.06 }}
+                >
+                  <Link href={`/urun/${product.slug}`} className="group block">
+                    <article className="overflow-hidden rounded-3xl border border-[#d8d8d6] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_18px_44px_rgba(0,0,0,0.12)]">
+                      <div className="relative h-80 border-b border-[#ecebe9] bg-[#f6f6f4] p-3">
+                        {previewImage ? (
+                          <Image
+                            src={previewImage}
+                            alt={product.name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                            quality={72}
+                            className="object-contain p-2"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-sm text-gray-500">Görsel Yok</div>
+                        )}
 
-                    {/* Content */}
-                    <h3 className="text-xl font-serif font-bold mb-2 text-gray-900 group-hover:text-rose transition-colors">
-                      {product.name || product.title || 'Model'}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4">
-                      {(product.description || '').substring(0, 60)}...
-                    </p>
-                    <div className="flex items-end justify-between">
-                      <div>
-                        <p className="text-gray-500 text-sm">Başlangıç fiyatı</p>
-                        <p className="text-2xl font-serif font-bold">
-                          ₺{(product.priceFrom ?? product.price_from ?? 0).toLocaleString('tr-TR')}
+                        <span className="absolute left-4 top-4 rounded-full bg-[#111319]/88 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-white">
+                          {product.tags && product.tags.length ? product.tags[0] : 'Hizmet'}
+                        </span>
+                      </div>
+
+                      <div className="p-5">
+                        <h3 className="text-xl font-serif font-semibold uppercase tracking-[0.03em] text-[#12151b] transition-colors group-hover:text-[#303641]">
+                          {product.name || product.title || 'Hizmet'}
+                        </h3>
+                        <p className="mt-2 text-sm leading-relaxed text-[#6a6f77]">
+                          {(product.description || '').substring(0, 88)}...
                         </p>
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center"
-                      >
-                        →
-                      </motion.button>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-              )
-            })
-          ) : (
-            <div className="col-span-full text-center py-16">
-              <p className="text-gray-500 text-lg">Henüz öne çıkan hizmet seçilmedi.</p>
-              <p className="text-gray-400 text-sm mt-2">Admin panelinden hizmet seçerek bu bölümü doldurabilirsiniz.</p>
-            </div>
-          )}
-        </div>
 
-        <div className="text-center mt-12">
-          <Link href="/koleksiyonlar">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 rounded-full bg-transparent border-2 border-gray-900 text-gray-900 font-semibold hover:bg-gray-900 hover:text-white transition-colors"
-            >
-              Tüm Koleksiyonu Gör
-            </motion.button>
+                        <div className="mt-4 flex items-end justify-between">
+                          <div>
+                            <p className="text-xs uppercase tracking-[0.14em] text-[#8b9097]">Başlangıç</p>
+                            <p className="text-2xl font-serif font-semibold text-[#111319]">
+                              ₺{(product.priceFrom ?? product.price_from ?? 0).toLocaleString('tr-TR')}
+                            </p>
+                          </div>
+                          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1d222c] text-sm font-semibold text-[#1d222c] transition group-hover:bg-[#1d222c] group-hover:text-white">
+                            →
+                          </span>
+                        </div>
+                      </div>
+                    </article>
+                  </Link>
+                </motion.div>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-[#c9cbc9] bg-white px-5 py-12 text-center">
+            <p className="text-gray-600">Henüz öne çıkan hizmet seçilmedi.</p>
+            <p className="mt-2 text-sm text-gray-500">Admin panelinden hizmet seçerek bu bölümü doldurabilirsiniz.</p>
+          </div>
+        )}
+
+        <div className="mt-10 text-center">
+          <Link
+            href="/koleksiyonlar"
+            className="inline-flex items-center justify-center rounded-full border border-[#1d222c] px-7 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#1d222c] transition hover:bg-[#1d222c] hover:text-white"
+          >
+            Tüm Koleksiyonu Gör
           </Link>
         </div>
       </div>

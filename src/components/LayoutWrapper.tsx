@@ -14,11 +14,17 @@ export function LayoutWrapper({ children, settings }: LayoutWrapperProps) {
     const pathname = usePathname()
     const isAdminOrLogin = pathname?.startsWith('/admin') || pathname?.startsWith('/login')
 
+    if (isAdminOrLogin) {
+        return <>{children}</>
+    }
+
     return (
         <>
-            {!isAdminOrLogin && <Header settings={settings} />}
-            {children}
-            {!isAdminOrLogin && <Footer settings={settings} />}
+            <Header settings={settings} />
+            <div className="pt-[84px]">
+                {children}
+            </div>
+            <Footer settings={settings} />
         </>
     )
 }

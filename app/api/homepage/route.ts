@@ -14,6 +14,11 @@ const defaultHomepage = {
   hero_cta_text: 'Hizmetleri Gör',
   hero_cta_link: '/koleksiyonlar',
   hero_brightness: 0.5,
+  cta_band_title: 'Randevunuzu Kolayca Oluşturun',
+  cta_band_description: 'WhatsApp veya telefon üzerinden hızlı randevu talebi bırakın, ekibimiz en kısa sürede size dönüş yapsın.',
+  cta_band_button_text: 'Randevu Al',
+  cta_band_button_link: '/iletisim',
+  cta_band_image: '',
 
   why_us_title: 'Neden Su Perisi Güzellik Salonu?',
   why_us_subtitle: 'Binlerce müşteri bize güvendi',

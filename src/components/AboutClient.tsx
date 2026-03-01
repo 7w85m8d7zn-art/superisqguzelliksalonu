@@ -1,98 +1,71 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { FAQSection } from '@/src/components/FAQSection'
 import { StickyButtons } from '@/src/components/StickyButtons'
+import { PageHero } from '@/src/components/PageHero'
 import { AboutData, ContactNumbers } from '@/src/types'
 
 export function AboutClient({ about, contactNumbers }: { about: AboutData; contactNumbers: ContactNumbers }) {
-    const aboutImage = about.image?.trim() || ''
+  const aboutImage = about.image?.trim() || ''
 
-    return (
-        <>
-            <main className="min-h-screen bg-cream pt-24 pb-20">
-                <div className="max-w-6xl mx-auto px-4">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center mb-16"
-                    >
-                        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">{about.title}</h1>
-                        <p className="text-gray-600 text-lg max-w-2xl mx-auto">{about.subtitle}</p>
-                    </motion.div>
+  return (
+    <>
+      <main className="min-h-screen bg-[#f2f1ef] pb-20">
+        <PageHero title={about.title} subtitle={about.subtitle} />
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                        {/* Image */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -30 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="bg-white rounded-lg shadow-lg overflow-hidden"
-                        >
-                            {aboutImage ? (
-                                <div className="relative h-80 w-full">
-                                    <Image
-                                        src={aboutImage}
-                                        alt={about.title}
-                                        fill
-                                        sizes="(max-width: 1024px) 100vw, 50vw"
-                                        quality={70}
-                                        className="object-cover"
-                                    />
-                                </div>
-                            ) : (
-                                <div className="w-full h-80 bg-gray-100 flex items-center justify-center">
-                                    <span className="text-gray-400">Salonumuzu Ziyaret Edin</span>
-                                </div>
-                            )}
-                        </motion.div>
-
-                        {/* Content */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 30 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
-                        >
-                            <div
-                                className="prose prose-sm max-w-none mb-8 text-gray-600"
-                                dangerouslySetInnerHTML={{ __html: about.content.replace(/\n/g, '<br/>') }}
-                            />
-
-                            {/* Features */}
-                            <div className="space-y-4">
-                                <div className="flex items-start gap-3">
-                                    <span className="text-lg">✓</span>
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900">{about.feature1_title}</h4>
-                                        <p className="text-sm text-gray-600">{about.feature1_desc}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <span className="text-lg">✓</span>
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900">{about.feature2_title}</h4>
-                                        <p className="text-sm text-gray-600">{about.feature2_desc}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <span className="text-lg">✓</span>
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900">{about.feature3_title}</h4>
-                                        <p className="text-sm text-gray-600">{about.feature3_desc}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
+        <section className="mx-auto mt-12 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div className="overflow-hidden rounded-3xl border border-[#d8d8d6] bg-white shadow-[0_14px_40px_rgba(0,0,0,0.08)]">
+              {aboutImage ? (
+                <div className="relative h-[400px] w-full lg:h-full lg:min-h-[540px]">
+                  <Image
+                    src={aboutImage}
+                    alt={about.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality={74}
+                    className="object-cover"
+                  />
                 </div>
-
-                <div className="mt-16">
-                    <FAQSection />
+              ) : (
+                <div className="flex h-[400px] w-full items-center justify-center bg-[#e8e7e4] text-gray-600 lg:h-full lg:min-h-[540px]">
+                  Salonumuzdan bir kare
                 </div>
-            </main>
-            <StickyButtons contactNumbers={contactNumbers} />
-        </>
-    )
+              )}
+            </div>
+
+            <div className="rounded-3xl border border-[#d8d8d6] bg-white p-6 shadow-[0_14px_40px_rgba(0,0,0,0.08)] md:p-8">
+              <div
+                className="prose prose-sm max-w-none text-[#5f6670]"
+                dangerouslySetInnerHTML={{ __html: about.content.replace(/\n/g, '<br/>') }}
+              />
+
+              <div className="mt-8 space-y-3">
+                <article className="rounded-2xl border border-[#e2e2df] bg-[#f7f6f4] p-4">
+                  <h4 className="text-lg font-serif font-semibold uppercase tracking-[0.03em] text-[#111319]">{about.feature1_title}</h4>
+                  <p className="mt-2 text-sm leading-relaxed text-[#5f6670]">{about.feature1_desc}</p>
+                </article>
+
+                <article className="rounded-2xl border border-[#e2e2df] bg-[#f7f6f4] p-4">
+                  <h4 className="text-lg font-serif font-semibold uppercase tracking-[0.03em] text-[#111319]">{about.feature2_title}</h4>
+                  <p className="mt-2 text-sm leading-relaxed text-[#5f6670]">{about.feature2_desc}</p>
+                </article>
+
+                <article className="rounded-2xl border border-[#e2e2df] bg-[#f7f6f4] p-4">
+                  <h4 className="text-lg font-serif font-semibold uppercase tracking-[0.03em] text-[#111319]">{about.feature3_title}</h4>
+                  <p className="mt-2 text-sm leading-relaxed text-[#5f6670]">{about.feature3_desc}</p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="mt-16">
+          <FAQSection />
+        </div>
+      </main>
+      <StickyButtons contactNumbers={contactNumbers} />
+    </>
+  )
 }

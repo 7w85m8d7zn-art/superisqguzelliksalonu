@@ -105,16 +105,17 @@ export default function Sidebar({ className = '', onNavigate }: SidebarProps) {
 
   return (
     <aside
-      className={`flex h-screen w-60 shrink-0 flex-col border-r border-slate-200 bg-white p-3 text-slate-700 md:w-64 md:p-4 ${className}`}
+      className={`flex h-full w-60 shrink-0 flex-col overflow-y-auto border-r border-[#d8d0c3] bg-[#fffdf8] p-3 text-[#111319] md:w-64 md:p-4 ${className}`}
+      style={{ backgroundColor: '#fffdf8', color: '#111319' }}
     >
       <Link
         href="/admin"
         onClick={onNavigate}
-        className="mb-6 inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5"
+        className="mb-6 inline-flex items-center gap-3 rounded-2xl border border-[#d8d0c3] bg-[#ffffff] px-3 py-2.5"
       >
         <div>
-          <p className="text-sm font-semibold text-slate-900">Su Perisi</p>
-          <p className="text-[11px] font-medium text-slate-500">Yönetim Paneli</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.08em] text-[#111319]">Su Perisi</p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.11em] text-[#6c7483]">Yönetim Paneli</p>
         </div>
       </Link>
 
@@ -127,15 +128,16 @@ export default function Sidebar({ className = '', onNavigate }: SidebarProps) {
                 onClick={onNavigate}
                 className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
                   isActive(item.href)
-                    ? 'bg-slate-100 text-slate-950 ring-1 ring-slate-200'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    ? 'bg-[#111319] text-white ring-1 ring-[#111319]'
+                    : 'text-[#4b5565] hover:bg-[#ece7dd] hover:text-[#111319]'
                 }`}
+                style={{ minHeight: 52 }}
               >
                 <span>{item.icon}</span>
                 <span className="admin-nav-label">{item.label}</span>
 
                 {item.href === '/admin/appointments' && pendingAppointments > 0 && (
-                  <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-600 px-1.5 text-[10px] font-bold text-white">
+                  <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#d4b17a] px-1.5 text-[10px] font-bold text-[#111319]">
                     {pendingBadgeText}
                   </span>
                 )}
@@ -149,16 +151,16 @@ export default function Sidebar({ className = '', onNavigate }: SidebarProps) {
         <Link
           href="/admin/appointments?status=pending"
           onClick={onNavigate}
-          className="mb-3 inline-flex items-center justify-between gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100"
+          className="mb-3 inline-flex items-center justify-between gap-2 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-3 py-2 text-xs font-semibold text-[#9f1239] transition hover:bg-[#ffe4e6]"
         >
           <span>Bekleyen Talepler</span>
-          <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-600 px-1.5 text-[10px] font-bold text-white">
+          <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#d4b17a] px-1.5 text-[10px] font-bold text-[#111319]">
             {pendingBadgeText}
           </span>
         </Link>
       )}
 
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-2 text-center text-[10px] font-semibold text-slate-500 md:text-[11px]">
+      <div className="rounded-lg border border-[#d8d0c3] bg-[#ffffff] p-2 text-center text-[10px] font-semibold text-[#6c7483] md:text-[11px]">
         v1.0
       </div>
     </aside>

@@ -77,14 +77,17 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
   )
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md">
+    <header
+      className="sticky top-0 z-40 border-b border-[#d8d0c3] bg-[#fffdf8]"
+      style={{ backgroundColor: '#fffdf8', color: '#111319' }}
+    >
       <div className="px-3 py-3 sm:px-4 md:px-6">
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <div className="flex min-w-0 items-start gap-2.5 sm:gap-3">
+        <div className="flex items-start justify-between gap-2 sm:gap-3">
+          <div className="flex min-w-0 flex-1 items-start gap-2.5 sm:gap-3">
             <button
               type="button"
               onClick={onMenuClick}
-              className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 md:hidden"
+              className="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d8d0c3] bg-[#ffffff] text-[#111319] md:hidden"
               aria-label="Menüyü aç"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -93,14 +96,18 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
             </button>
 
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Admin</p>
-              <h1 className="admin-page-title mt-1 truncate">{sectionMeta.title}</h1>
-              <p className="admin-page-subtitle mt-0.5 max-w-[13rem] sm:max-w-none">{sectionMeta.subtitle}</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#6c7483]">Admin</p>
+              <h1 className="mt-1 truncate text-lg font-semibold uppercase tracking-[0.06em] text-[#111319] sm:text-xl">
+                {sectionMeta.title}
+              </h1>
+              <p className="mt-0.5 max-w-[13rem] text-xs font-medium text-[#5f6571] sm:max-w-none sm:text-sm">
+                {sectionMeta.subtitle}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-            <div className="hidden rounded-lg border border-slate-300 bg-slate-50 px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 md:block">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 md:gap-3">
+            <div className="hidden rounded-lg border border-[#d8d0c3] bg-[#ffffff] px-2.5 py-1.5 text-[11px] font-semibold text-[#4b5565] md:block">
               {todayLabel}
             </div>
 
@@ -108,20 +115,20 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="admin-btn-outline inline-flex items-center rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors sm:px-3 sm:text-sm"
+              className="inline-flex items-center rounded-full border border-[#111319] bg-transparent px-2.5 py-1.5 text-xs font-semibold text-[#111319] transition hover:bg-[#111319] hover:text-white sm:px-3 sm:text-sm"
+              style={{ textTransform: 'none', letterSpacing: 'normal' }}
             >
               <span className="sm:hidden">Site</span>
-              <span className="hidden sm:inline">Siteyi Gör</span>
+              <span className="hidden sm:inline">Siteyi gör</span>
             </Link>
 
             <form action="/api/auth/signout" method="POST">
               <button
                 type="submit"
-                className="admin-btn-danger inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors sm:px-3 sm:text-sm"
-                style={{ backgroundColor: '#ff0000', color: '#ffffff', borderColor: '#ff0000' }}
+                className="inline-flex items-center gap-1 rounded-full border border-[#be123c] bg-[#be123c] px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-[#9f1239] sm:px-3 sm:text-sm"
+                style={{ backgroundColor: '#be123c', borderColor: '#9f1239', color: '#ffffff', opacity: 1 }}
               >
-                <span className="sm:hidden">Çıkış</span>
-                <span className="hidden sm:inline">Çıkış Yap</span>
+                <span>Çıkış yap</span>
               </button>
             </form>
           </div>

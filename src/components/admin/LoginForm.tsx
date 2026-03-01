@@ -56,32 +56,32 @@ export default function LoginForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5 text-[#111319]">
         <div>
-          <label className="mb-2 block text-sm font-medium text-slate-700">E-posta</label>
+          <label className="mb-2 block text-sm font-medium text-[#374151]">E-posta</label>
           <input
             name="email"
             type="email"
             required
-            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition-all focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+            className="w-full rounded-xl border border-[#d8d0c3] bg-white px-4 py-3 text-sm text-[#111319] outline-none transition-all placeholder:text-[#8b94a3] focus:border-[#111319] focus:ring-2 focus:ring-[#111319]/10"
             placeholder="admin@*****.com"
           />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-slate-700">Şifre</label>
+          <label className="mb-2 block text-sm font-medium text-[#374151]">Şifre</label>
           <div className="relative">
             <input
               name="password"
               type={showPassword ? 'text' : 'password'}
               required
-              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 pr-24 text-sm text-slate-900 outline-none transition-all focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+              className="w-full rounded-xl border border-[#d8d0c3] bg-white px-4 py-3 pr-24 text-sm text-[#111319] outline-none transition-all placeholder:text-[#8b94a3] focus:border-[#111319] focus:ring-2 focus:ring-[#111319]/10"
               placeholder="••••••••"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-3 py-1 text-xs font-medium text-[#4b5565] transition hover:bg-[#f1f5f9] hover:text-[#111319]"
             >
               {showPassword ? 'Gizle' : 'Göster'}
             </button>
@@ -89,15 +89,19 @@ export default function LoginForm() {
         </div>
 
         <div className="flex items-center justify-between gap-3">
-          <label className="inline-flex items-center gap-2 text-sm text-slate-600">
-            <input type="checkbox" name="remember" className="h-4 w-4 rounded border-slate-300 text-slate-900" />
+          <label className="inline-flex items-center gap-2 text-sm text-[#4b5565]">
+            <input
+              type="checkbox"
+              name="remember"
+              className="h-4 w-4 rounded border-[#9aa3b2] text-[#111319] focus:ring-[#111319]/20"
+            />
             <span>Beni hatırla</span>
           </label>
 
           <button
             type="button"
             onClick={() => setShowSupportPopup(true)}
-            className="text-sm font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
+            className="text-sm font-medium text-[#4b5565] underline decoration-[#c4ccd9] underline-offset-4 transition hover:text-[#111319]"
           >
             Şifremi unuttum
           </button>
@@ -109,8 +113,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="login-submit-btn inline-flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-            style={{ backgroundColor: '#0f172a', color: '#ffffff', borderColor: '#0f172a' }}
+            className="login-submit-btn inline-flex w-full items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold uppercase tracking-[0.11em] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
           </button>

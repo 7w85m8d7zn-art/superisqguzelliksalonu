@@ -11,7 +11,11 @@ interface FormData {
   message: string
 }
 
-export function ContactForm() {
+interface ContactFormProps {
+  submitLabel?: string
+}
+
+export function ContactForm({ submitLabel }: ContactFormProps) {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -76,14 +80,14 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <label htmlFor="name" className="block text-sm font-semibold mb-2">
+        <label htmlFor="name" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[#6e7480]">
           Ad Soyad *
         </label>
         <input
@@ -94,7 +98,7 @@ export function ContactForm() {
           onChange={handleChange}
           required
           placeholder="Adınız ve soyadınız"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose focus:border-transparent transition-all"
+          className="w-full rounded-2xl border border-[#d7d8d6] bg-[#f8f7f5] px-4 py-3 text-sm text-[#13161d] outline-none transition focus:border-[#111319] focus:bg-white"
         />
       </motion.div>
 
@@ -104,7 +108,7 @@ export function ContactForm() {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.1 }}
       >
-        <label htmlFor="email" className="block text-sm font-semibold mb-2">
+        <label htmlFor="email" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[#6e7480]">
           Email *
         </label>
         <input
@@ -115,7 +119,7 @@ export function ContactForm() {
           onChange={handleChange}
           required
           placeholder="ornek@email.com"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose focus:border-transparent transition-all"
+          className="w-full rounded-2xl border border-[#d7d8d6] bg-[#f8f7f5] px-4 py-3 text-sm text-[#13161d] outline-none transition focus:border-[#111319] focus:bg-white"
         />
       </motion.div>
 
@@ -125,7 +129,7 @@ export function ContactForm() {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <label htmlFor="phone" className="block text-sm font-semibold mb-2">
+        <label htmlFor="phone" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[#6e7480]">
           Telefon Numarası *
         </label>
         <input
@@ -135,8 +139,8 @@ export function ContactForm() {
           value={formData.phone}
           onChange={handleChange}
           required
-          placeholder="05306249382"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose focus:border-transparent transition-all"
+          placeholder="05435167011"
+          className="w-full rounded-2xl border border-[#d7d8d6] bg-[#f8f7f5] px-4 py-3 text-sm text-[#13161d] outline-none transition focus:border-[#111319] focus:bg-white"
         />
       </motion.div>
 
@@ -146,7 +150,7 @@ export function ContactForm() {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.3 }}
       >
-        <label htmlFor="subject" className="block text-sm font-semibold mb-2">
+        <label htmlFor="subject" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[#6e7480]">
           Konu *
         </label>
         <select
@@ -155,7 +159,7 @@ export function ContactForm() {
           value={formData.subject}
           onChange={handleChange}
           required
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose focus:border-transparent transition-all"
+          className="w-full rounded-2xl border border-[#d7d8d6] bg-[#f8f7f5] px-4 py-3 text-sm text-[#13161d] outline-none transition focus:border-[#111319] focus:bg-white"
         >
           <option value="">Konu seçiniz</option>
           <option value="randevu">Randevu Talep</option>
@@ -172,7 +176,7 @@ export function ContactForm() {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.4 }}
       >
-        <label htmlFor="message" className="block text-sm font-semibold mb-2">
+        <label htmlFor="message" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[#6e7480]">
           Mesaj *
         </label>
         <textarea
@@ -183,7 +187,7 @@ export function ContactForm() {
           required
           rows={5}
           placeholder="Mesajınızı buraya yazınız..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose focus:border-transparent transition-all resize-none"
+          className="w-full resize-none rounded-2xl border border-[#d7d8d6] bg-[#f8f7f5] px-4 py-3 text-sm text-[#13161d] outline-none transition focus:border-[#111319] focus:bg-white"
         />
       </motion.div>
 
@@ -193,7 +197,7 @@ export function ContactForm() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-lg text-center"
+          className="rounded-2xl border border-green-200 bg-green-50 px-6 py-4 text-center text-green-800"
         >
           <p className="font-semibold">✓ Mesajınız başarıyla gönderildi!</p>
           <p className="text-sm mt-1">En kısa sürede sizinle iletişime geçeceğiz.</p>
@@ -204,7 +208,7 @@ export function ContactForm() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg text-center"
+          className="rounded-2xl border border-red-200 bg-red-50 px-6 py-4 text-center text-red-700"
         >
           <p className="font-semibold">Gönderim başarısız</p>
           <p className="text-sm mt-1">{submitError}</p>
@@ -215,16 +219,12 @@ export function ContactForm() {
       <motion.button
         type="submit"
         disabled={isLoading}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="w-full btn btn-primary disabled:opacity-70 disabled:cursor-not-allowed"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="w-full rounded-full border border-[#111319] bg-[#111319] px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-transparent hover:text-[#111319] disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {isLoading ? 'Gönderiliyor...' : 'Mesaj Gönder'}
+        {isLoading ? 'Gönderiliyor...' : (submitLabel || 'Mesaj Gönder')}
       </motion.button>
-
-      <p className="text-center text-gray-600 text-sm">
-        Ya da doğrudan WhatsApp'tan iletişim kurmak için aşağıdaki butonu kullanabilirsiniz.
-      </p>
     </form>
   )
 }

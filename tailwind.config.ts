@@ -10,8 +10,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Montserrat', 'sans-serif'],
-        sans: ['Inter', 'sans-serif'],
+        serif: ['var(--font-heading)', 'sans-serif'],
+        sans: ['var(--font-body)', 'sans-serif'],
       },
       colors: {
         cream: '#FAF9F7',

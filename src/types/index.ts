@@ -42,6 +42,11 @@ export interface HomepageData {
     hero_cta_text: string
     hero_cta_link: string
     hero_brightness: number
+    cta_band_title: string
+    cta_band_description: string
+    cta_band_button_text: string
+    cta_band_button_link: string
+    cta_band_image: string
     why_us_title: string
     why_us_subtitle: string
     why_us_item1_title?: string

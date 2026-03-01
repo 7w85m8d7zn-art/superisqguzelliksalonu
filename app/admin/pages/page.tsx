@@ -29,8 +29,8 @@ export default function PagesAdmin() {
     header_logo_text: 'Su Perisi Güzellik Salonu',
     header_menu_anasayfa: 'Ana Sayfa',
     header_menu_koleksiyon: 'Koleksiyon',
-    header_phone: '0530 624 93 82',
-    header_whatsapp: '905306249382',
+    header_phone: '0543 516 70 11',
+    header_whatsapp: '905435167011',
     header_menu_hakkimizda: 'Hakkımızda',
     header_menu_iletisim: 'Randevu Oluşltur',
   })
@@ -42,8 +42,8 @@ export default function PagesAdmin() {
     footer_brand_name: 'Su Perisi Güzellik Salonu',
     footer_brand_description: 'Profesyonel kadın saç ve kuaför hizmetleri',
     footer_text: '© 2025 Su Perisi Güzellik Salonu. Tüm hakları saklıdır.',
-    footer_address: 'İstanbul, Üsküdar',
-    footer_whatsapp: '05306249382',
+    footer_address: 'Kırşehir Türkiye',
+    footer_whatsapp: '05435167011',
     footer_social_instagram: '',
     footer_social_facebook: '',
     footer_menu_hakkimizda: 'Hakkımızda',
@@ -57,6 +57,11 @@ export default function PagesAdmin() {
     hero_image: '',
     hero_cta_text: 'Hizmetleri Gör',
     hero_cta_link: '/koleksiyonlar',
+    cta_band_title: 'Randevunuzu Kolayca Oluşturun',
+    cta_band_description: 'WhatsApp veya telefon üzerinden hızlı randevu talebi bırakın, ekibimiz en kısa sürede size dönüş yapsın.',
+    cta_band_button_text: 'Randevu Al',
+    cta_band_button_link: '/iletisim',
+    cta_band_image: '',
     featured_products: [] as string[],
     why_us_title: 'Neden Salonumuz?',
     why_us_subtitle: 'Binlerce müşteri bize güvendi',
@@ -75,7 +80,7 @@ export default function PagesAdmin() {
   const [hakkimizda, setHakkimizda] = useState({
     title: 'Hakkımızda',
     subtitle: 'Su Perisi Güzellik Salonu, kadın kuaför ve güzellik hizmetlerinde yüksek kalite ve modern stilin adresidir.',
-    content: `2010 yılında kurulan Dijital Showroom, kadın saç kesimi, renklendirme, fön ve bakım hizmetlerinde İstanbul'un en sevilen salonlarından biridir.
+    content: `2010 yılında kurulan Dijital Showroom, kadın saç kesimi, renklendirme, fön ve bakım hizmetlerinde Kırşehir'in en sevilen salonlarından biridir.
 
 Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel saç tasarımıyla her müşteriye yüz hatlarına ve tarzına uygun, kişiye özel bir görünüm sunar. Kaliteli Model ve hijyen odaklı yaklaşımımız, Dijital Showroom'un imza stilini oluşturur.`,
     image: '',
@@ -91,9 +96,9 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
   const [iletisim, setIletisim] = useState({
     title: 'Randevu & İletişim',
     subtitle: 'Sorularınız mı var? Hizmetlerimiz hakkında bilgi almak veya randevu oluşturmak için bizimle iletişime geçin. En kısa sürede yanıt vereceğiz.',
-    address: 'Kırşehir, Merkez',
-    phone: '0530 624 93 82',
-    whatsapp: '0530 624 93 82',
+    address: 'Kırşehir Türkiye',
+    phone: '0543 516 70 11',
+    whatsapp: '0543 516 70 11',
     email: 'info@dijitalshowroom.com',
     hours: 'Pazartesi - Pazar\n10:00 - 19:00',
     form_title: 'Bize Ulaşın',
@@ -103,9 +108,9 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
   })
 
   const [contactNumbers, setContactNumbers] = useState({
-    phone: '0530 624 93 82',
-    whatsapp_display: '0530 624 93 82',
-    whatsapp_number: '905306249382',
+    phone: '0543 516 70 11',
+    whatsapp_display: '0543 516 70 11',
+    whatsapp_number: '905435167011',
     whatsapp_message: 'Merhaba, randevu almak istiyorum.',
   })
 
@@ -181,6 +186,11 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
         hero_image: hp.hero_image || '',
         hero_cta_text: hp.hero_cta_text || '',
         hero_cta_link: hp.hero_cta_link || '',
+        cta_band_title: hp.cta_band_title || '',
+        cta_band_description: hp.cta_band_description || '',
+        cta_band_button_text: hp.cta_band_button_text || '',
+        cta_band_button_link: hp.cta_band_button_link || '',
+        cta_band_image: hp.cta_band_image || '',
         featured_products: hp.featured_products || [],
         why_us_title: hp.why_us_title || '',
         why_us_subtitle: hp.why_us_subtitle || '',
@@ -400,29 +410,30 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
       )}
 
       <div className="admin-editor mx-auto max-w-6xl p-1 md:p-2">
+        <button
+          onClick={saveAll}
+          disabled={loading}
+          className="admin-btn-primary fixed bottom-4 right-4 z-[85] inline-flex min-w-[132px] items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold shadow-[0_16px_28px_-18px_rgba(17,19,25,0.8)] disabled:cursor-not-allowed disabled:opacity-60 md:bottom-auto md:right-6 md:top-[96px]"
+        >
+          {loading ? 'Kaydediliyor...' : 'Kaydet'}
+        </button>
+
         {/* Header */}
-        <div className="mb-4 flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="sticky top-2 z-30 mb-4 flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:flex-nowrap">
           <div>
             <h1 className="admin-page-title mb-1">Sayfa Editörü</h1>
             <p className="admin-page-subtitle">Site sayfalarını ve genel içerikleri tek panelden yönetin.</p>
           </div>
-          <button
-            onClick={saveAll}
-            disabled={loading}
-            className="admin-btn-primary inline-flex w-full items-center justify-center rounded-lg px-4 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-          >
-            {loading ? 'Kaydediliyor...' : 'Kaydet'}
-          </button>
         </div>
 
         {/* Sekmeler */}
-        <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-          <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="sticky top-[96px] z-20 mb-4 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-6">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`admin-tab-label shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 transition-colors ${activeTab === tab.id ? 'admin-btn-primary' : 'admin-btn-outline'
+                className={`admin-tab-label inline-flex w-full items-center justify-center whitespace-nowrap rounded-lg px-3 py-2 text-center transition-colors ${activeTab === tab.id ? 'admin-btn-primary' : 'admin-btn-outline'
                   }`}
               >
                 {tab.name}
@@ -492,12 +503,12 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
                 <div>
                   <label className="block text-sm font-medium mb-1">Adres</label>
                   <textarea className="w-full border rounded px-3 py-2" rows={2} value={footer.footer_address}
-                    onChange={(e) => setFooter({ ...footer, footer_address: e.target.value })} placeholder="İstanbul, Üsküdar" />
+                    onChange={(e) => setFooter({ ...footer, footer_address: e.target.value })} placeholder="Kırşehir Türkiye" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">WhatsApp Numarası (Görünür)</label>
                   <input type="text" className="w-full border rounded px-3 py-2" value={footer.footer_whatsapp}
-                    onChange={(e) => setFooter({ ...footer, footer_whatsapp: e.target.value })} placeholder="05306249382" />
+                    onChange={(e) => setFooter({ ...footer, footer_whatsapp: e.target.value })} placeholder="05435167011" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Footer Copyright Metni</label>
@@ -549,6 +560,73 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
                       <label className="block text-sm font-medium mb-1">Buton Linki</label>
                       <input type="text" className="w-full border rounded px-3 py-2" value={homepage.hero_cta_link}
                         onChange={(e) => setHomepage({ ...homepage, hero_cta_link: e.target.value })} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Randevu Bilgi Bandı */}
+              <div className="mb-8 pb-6 border-b">
+                <h3 className="admin-section-subtitle mb-4">Randevu Bilgi Bandı</h3>
+                <div className="space-y-4 max-w-xl">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Başlık</label>
+                    <input
+                      type="text"
+                      className="w-full border rounded px-3 py-2"
+                      value={homepage.cta_band_title}
+                      onChange={(e) => setHomepage({ ...homepage, cta_band_title: e.target.value })}
+                      placeholder="Randevunuzu Kolayca Oluşturun"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Açıklama</label>
+                    <textarea
+                      className="w-full border rounded px-3 py-2"
+                      rows={3}
+                      value={homepage.cta_band_description}
+                      onChange={(e) => setHomepage({ ...homepage, cta_band_description: e.target.value })}
+                      placeholder="WhatsApp veya telefon üzerinden hızlı randevu talebi bırakın."
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Buton Yazısı</label>
+                      <input
+                        type="text"
+                        className="w-full border rounded px-3 py-2"
+                        value={homepage.cta_band_button_text}
+                        onChange={(e) => setHomepage({ ...homepage, cta_band_button_text: e.target.value })}
+                        placeholder="Randevu Al"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Buton Linki</label>
+                      <input
+                        type="text"
+                        className="w-full border rounded px-3 py-2"
+                        value={homepage.cta_band_button_link}
+                        onChange={(e) => setHomepage({ ...homepage, cta_band_button_link: e.target.value })}
+                        placeholder="/iletisim"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Arkaplan Görseli (URL)</label>
+                    <input
+                      type="text"
+                      className="w-full border rounded px-3 py-2"
+                      value={homepage.cta_band_image}
+                      onChange={(e) => setHomepage({ ...homepage, cta_band_image: e.target.value })}
+                      placeholder="https://images.unsplash.com/..."
+                    />
+                    <div className="mt-2">
+                      <ImageUploader
+                        onPreviews={(previews) => {
+                          if (!previews.length) return
+                          setHomepage({ ...homepage, cta_band_image: previews[0] })
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -732,7 +810,7 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
                     className="w-full border rounded px-3 py-2"
                     value={contactNumbers.phone}
                     onChange={(e) => setContactNumbers({ ...contactNumbers, phone: e.target.value })}
-                    placeholder="0530 624 93 82"
+                    placeholder="0543 516 70 11"
                   />
                 </div>
                 <div>
@@ -742,7 +820,7 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
                     className="w-full border rounded px-3 py-2"
                     value={contactNumbers.whatsapp_display}
                     onChange={(e) => setContactNumbers({ ...contactNumbers, whatsapp_display: e.target.value })}
-                    placeholder="0530 624 93 82"
+                    placeholder="0543 516 70 11"
                   />
                 </div>
                 <div>
@@ -752,7 +830,7 @@ Deneyimli ekibimiz; saç kesimi, boya-balayage, keratin bakımı ve profesyonel 
                     className="w-full border rounded px-3 py-2"
                     value={contactNumbers.whatsapp_number}
                     onChange={(e) => setContactNumbers({ ...contactNumbers, whatsapp_number: e.target.value })}
-                    placeholder="905306249382"
+                    placeholder="905435167011"
                   />
                   <p className="mt-1 text-xs text-slate-500">wa.me linklerinde bu numara kullanılır.</p>
                 </div>

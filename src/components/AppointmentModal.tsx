@@ -228,7 +228,7 @@ export function AppointmentModal({ isOpen, onClose }: AppointmentModalProps) {
                           value={formData.phone}
                           onChange={handleChange}
                           required
-                          placeholder="05306249382"
+                          placeholder="05435167011"
                           className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose"
                         />
                       </div>

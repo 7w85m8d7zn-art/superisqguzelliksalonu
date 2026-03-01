@@ -4,6 +4,7 @@ import { HeroSection } from '@/src/components/HeroSection'
 import { FeaturedGrid } from '@/src/components/FeaturedGrid'
 import { WhyUsSection } from '@/src/components/WhyUsSection'
 import { ShowroomSection } from '@/src/components/ShowroomSection'
+import { BookingStripSection } from '@/src/components/BookingStripSection'
 import { StickyButtons } from '@/src/components/StickyButtons'
 import { getContactNumbers, getHomepageData, getProducts } from '@/src/lib/fetchers'
 
@@ -25,6 +26,7 @@ export default async function Home() {
       <main>
         <HeroSection hero={homepageData} />
         <FeaturedGrid products={featuredProducts} />
+        <BookingStripSection data={homepageData} />
         <WhyUsSection data={homepageData} />
         <ShowroomSection data={homepageData} />
       </main>

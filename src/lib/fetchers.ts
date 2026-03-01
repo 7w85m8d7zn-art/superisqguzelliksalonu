@@ -19,9 +19,9 @@ const PRODUCT_SERVICE_DETAILS_KEY = 'product_service_details'
 const CONTACT_NUMBERS_KEY = 'contact_numbers'
 
 const FALLBACK_CONTACT_NUMBERS: ContactNumbers = {
-    phone: '0530 624 93 82',
-    whatsapp_display: '0530 624 93 82',
-    whatsapp_number: '905306249382',
+    phone: '0543 516 70 11',
+    whatsapp_display: '0543 516 70 11',
+    whatsapp_number: '905435167011',
     whatsapp_message: 'Merhaba, randevu almak istiyorum.',
 }
 
@@ -214,8 +214,8 @@ export async function getSettings(): Promise<{
             footer_brand_name: 'Su Perisi Güzellik Salonu',
             footer_brand_description: 'Profesyonel kadın saç ve kuaför hizmetleri',
             footer_text: '2025 Su Perisi Güzellik Salonu. Tüm hakları saklıdır.',
-            footer_address: 'İstanbul, Üsküdar',
-            footer_whatsapp: '05306249382',
+            footer_address: 'Kırşehir Türkiye',
+            footer_whatsapp: '05435167011',
             footer_social_instagram: '',
             footer_social_facebook: '',
             footer_menu_hakkimizda: 'Hakkımızda',
@@ -286,6 +286,11 @@ export async function getHomepageData(): Promise<HomepageData> {
         hero_cta_text: 'Hizmetleri Gör',
         hero_cta_link: '/koleksiyonlar',
         hero_brightness: 0.5,
+        cta_band_title: 'Randevunuzu Kolayca Oluşturun',
+        cta_band_description: 'WhatsApp veya telefon üzerinden hızlı randevu talebi bırakın, ekibimiz en kısa sürede size dönüş yapsın.',
+        cta_band_button_text: 'Randevu Al',
+        cta_band_button_link: '/iletisim',
+        cta_band_image: '',
         why_us_title: 'Neden Su Perisi Güzellik Salonu?',
         why_us_subtitle: 'Binlerce müşteri bize güvendi',
         why_us_item1_title: 'Uzman Ekip',
@@ -424,9 +429,9 @@ export async function getContactData(): Promise<ContactData> {
         form_title: 'Bize Ulaşın',
         form_submit_text: 'Mesaj Gönder',
         whatsapp_button_text: "WhatsApp'tan Hızlıca Yazın",
-        address: 'Kırşehir, Merkez',
-        phone: '0530 624 93 82',
-        whatsapp: '0530 624 93 82',
+        address: 'Kırşehir Türkiye',
+        phone: '0543 516 70 11',
+        whatsapp: '0543 516 70 11',
         email: 'info@dijitalshowroom.com',
         hours: 'Pazartesi - Pazar\n10:00 - 19:00',
         map_location: 'Kırşehir',

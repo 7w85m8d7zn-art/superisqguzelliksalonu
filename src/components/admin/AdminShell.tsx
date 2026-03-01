@@ -29,20 +29,20 @@ export default function AdminShell({ children }: AdminShellProps) {
   }, [isMobileMenuOpen])
 
   return (
-    <div className="flex min-h-screen">
-      <div className="relative hidden border-r border-slate-200 bg-white md:block">
-        <Sidebar />
+    <div className="flex min-h-screen bg-[#f4f1eb]" style={{ backgroundColor: '#f4f1eb' }}>
+      <div className="relative hidden w-64 border-r border-[#d8d0c3] bg-[#fffdf8] md:block">
+        <Sidebar className="sticky top-0 h-screen w-full border-r-0" />
       </div>
 
       <div
-        className={`fixed inset-0 z-50 md:hidden ${isMobileMenuOpen ? '' : 'pointer-events-none'}`}
+        className={`fixed inset-0 z-[80] md:hidden ${isMobileMenuOpen ? '' : 'pointer-events-none'}`}
         aria-hidden={!isMobileMenuOpen}
       >
         <button
           type="button"
           aria-label="Menüyü kapat"
           onClick={() => setIsMobileMenuOpen(false)}
-          className={`absolute inset-0 bg-slate-900/45 transition-opacity ${
+          className={`absolute inset-0 bg-black/70 transition-opacity ${
             isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
           }`}
         />
@@ -52,16 +52,19 @@ export default function AdminShell({ children }: AdminShellProps) {
           }`}
         >
           <Sidebar
-            className="h-full w-full min-h-full rounded-r-2xl border-r border-slate-200 shadow-2xl"
+            className="h-full w-full min-h-full rounded-r-2xl border-r border-[#d8d0c3] shadow-2xl"
             onNavigate={() => setIsMobileMenuOpen(false)}
           />
         </div>
       </div>
 
-      <div className="relative flex min-h-screen flex-1 flex-col bg-[radial-gradient(circle_at_20%_0%,rgba(15,23,42,0.06),transparent_32%),linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)]">
+      <div className="relative flex min-h-screen flex-1 flex-col bg-[#f4f1eb] text-[#111319]" style={{ color: '#111319' }}>
         <Topbar onMenuClick={() => setIsMobileMenuOpen(true)} />
-        <main className="flex-1 overflow-auto px-2.5 py-3 md:px-6 md:py-5">
-          <div className="rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_16px_36px_-28px_rgba(15,23,42,0.35)] sm:p-3 md:rounded-2xl md:p-4">
+        <main className="flex-1 overflow-auto px-2.5 py-3 md:px-5 md:py-5">
+          <div
+            className="rounded-xl border border-[#d8d0c3] bg-[#fffdf8] p-2.5 text-[#111319] shadow-[0_18px_36px_-28px_rgba(0,0,0,0.35)] sm:p-3 md:rounded-2xl md:p-4"
+            style={{ backgroundColor: '#fffdf8', color: '#111319' }}
+          >
             {children}
           </div>
         </main>

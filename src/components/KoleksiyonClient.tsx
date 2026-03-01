@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { StickyButtons } from '@/src/components/StickyButtons'
+import { PageHero } from '@/src/components/PageHero'
 import { ContactNumbers, Product } from '@/src/types'
 
 type SortOption = 'featured' | 'price-low' | 'price-high' | 'newest'
@@ -152,7 +153,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
 
     // Filter and sort products
     const filteredProducts = useMemo(() => {
-        let result = products.filter((product) => {
+        const result = products.filter((product) => {
             const productCategoryKey = normalizeText(formatCategoryLabel(product.category || ''))
             const productRawCategoryKey = normalizeText(product.category || '')
             const productColorKeys = new Set((product.colors || []).map((color) => normalizeText(color)))
@@ -229,20 +230,20 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
         <div className="space-y-6">
             {/* Search */}
             <div>
-                <label className="block text-sm font-semibold mb-3">Ara</label>
+                <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em] text-[#5b6472]">Ara</label>
                 <input
                     type="text"
-                    placeholder="Urun adi..."
+                    placeholder="Ürün adı..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose"
+                    className="w-full rounded-2xl border border-[#cfd2d7] bg-[#f8f7f5] px-4 py-2.5 outline-none transition focus:border-[#111319] focus:bg-white"
                 />
             </div>
 
             {/* Category Filter */}
             {allCategories.length > 0 && (
                 <div>
-                    <label className="block text-sm font-semibold mb-3">Koleksiyon</label>
+                    <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em] text-[#5b6472]">Koleksiyon</label>
                     <div className="space-y-2">
                         {allCategories.map((category) => (
                             <label key={category} className="flex items-center cursor-pointer">
@@ -250,7 +251,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                     type="checkbox"
                                     checked={isValueSelected(selectedCategories, category)}
                                     onChange={() => toggleSelectedValue(category, setSelectedCategories)}
-                                    className="w-4 h-4 text-rose"
+                                    className="h-4 w-4 text-[#111319]"
                                 />
                                 <span className="ml-3 text-sm">{category}</span>
                             </label>
@@ -262,7 +263,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
             {/* Color Filter */}
             {allColors.length > 0 && (
                 <div>
-                    <label className="block text-sm font-semibold mb-3">Renk</label>
+                    <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em] text-[#5b6472]">Renk</label>
                     <div className="space-y-2">
                         {allColors.map((color) => (
                             <label key={color} className="flex items-center cursor-pointer">
@@ -270,7 +271,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                     type="checkbox"
                                     checked={isValueSelected(selectedColors, color)}
                                     onChange={() => toggleSelectedValue(color, setSelectedColors)}
-                                    className="w-4 h-4 text-rose"
+                                    className="h-4 w-4 text-[#111319]"
                                 />
                                 <span className="ml-3 text-sm">{color}</span>
                             </label>
@@ -282,7 +283,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
             {/* Tags Filter */}
             {allTags.length > 0 && (
                 <div>
-                    <label className="block text-sm font-semibold mb-3">Etiket</label>
+                    <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em] text-[#5b6472]">Etiket</label>
                     <div className="space-y-2">
                         {allTags.map((tag) => (
                             <label key={tag} className="flex items-center cursor-pointer">
@@ -290,7 +291,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                     type="checkbox"
                                     checked={isValueSelected(selectedTags, tag)}
                                     onChange={() => toggleSelectedValue(tag, setSelectedTags)}
-                                    className="w-4 h-4 text-rose"
+                                    className="h-4 w-4 text-[#111319]"
                                 />
                                 <span className="ml-3 text-sm">{tag}</span>
                             </label>
@@ -302,7 +303,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
             {/* Clear Filters */}
             <button
                 onClick={clearFilters}
-                className="w-full text-center text-sm text-rose hover:text-rose/80 font-medium transition-colors"
+                className="w-full rounded-full border border-[#d4d7dc] px-4 py-2 text-center text-sm font-medium text-[#3e4756] transition-colors hover:border-[#111319] hover:text-[#1f2735]"
             >
                 Filtreleri Temizle
             </button>
@@ -311,51 +312,34 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
 
     return (
         <>
-            <main className="min-h-screen bg-cream pt-24 md:pt-32 pb-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Page Title */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="mb-12"
-                    >
-                        <h1 className="text-3xl md:text-5xl font-serif font-bold mb-3 md:mb-4">Koleksiyon</h1>
-                        <p className="text-gray-600 text-lg">
-                            {filteredProducts.length} Model bulundu
-                        </p>
-                    </motion.div>
+            <main className="min-h-screen bg-[#f2f1ef] pb-20">
+                <PageHero
+                    title="Koleksiyonlar"
+                    subtitle="Stiliniz ve ihtiyacınız için hazırlanan hizmetleri filtreleyerek hızlıca keşfedin."
+                />
 
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+                    <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
                         {/* Sidebar - Filters */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
-                            className="lg:col-span-1 hidden lg:block"
-                        >
-                            <div className="bg-white p-6 rounded-lg sticky top-24">
+                        <div className="lg:col-span-1 hidden lg:block">
+                            <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-3xl border border-[#d8d8d6] bg-white p-6 shadow-[0_12px_26px_rgba(0,0,0,0.06)]">
+                                <p className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-[#212a38]">Filtrele</p>
                                 {FiltersContent}
                             </div>
-                        </motion.div>
+                        </div>
 
                         {/* Main Content */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="lg:col-span-3"
-                        >
+                        <div className="lg:col-span-3">
                             {/* Mobile Toolbar (Filter + Sort) */}
                             <div className="mb-6 flex items-center gap-3 lg:hidden">
                                 <button
                                     type="button"
                                     onClick={() => setIsFilterOpen(true)}
-                                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium"
+                                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-[#111319] bg-[#111319] px-4 py-2 text-sm font-medium text-white"
                                 >
                                     Filtrele
                                     {activeFilterCount > 0 && (
-                                        <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gray-900 px-2 text-xs font-semibold text-white">
+                                        <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-2 text-xs font-semibold text-[#111319]">
                                             {activeFilterCount}
                                         </span>
                                     )}
@@ -364,7 +348,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value as SortOption)}
-                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-rose text-sm"
+                                    className="flex-1 rounded-full border border-[#cfd2d7] bg-white px-4 py-2 text-sm outline-none focus:border-[#111319]"
                                 >
                                     <option value="featured">Öne Çıkanlar</option>
                                     <option value="price-low">En Ucuz</option>
@@ -374,13 +358,13 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                             </div>
 
                             {/* Desktop Sort */}
-                            <div className="mb-8 hidden lg:flex items-center justify-between">
+                            <div className="mb-8 hidden rounded-2xl border border-[#d8d8d6] bg-white px-4 py-3 lg:flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <label className="text-sm font-medium">Sırala:</label>
+                                    <label className="text-xs font-semibold uppercase tracking-[0.12em] text-[#596270]">Sırala:</label>
                                     <select
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value as SortOption)}
-                                        className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose"
+                                        className="rounded-full border border-[#cfd2d7] bg-white px-4 py-2 outline-none focus:border-[#111319]"
                                     >
                                         <option value="featured">Öne Çıkanlar</option>
                                         <option value="price-low">En Ucuz</option>
@@ -405,28 +389,27 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                     <p className="text-gray-600 text-lg">Arama kriterlerinize uygun model bulunamadı.</p>
                                     <button
                                         onClick={clearFilters}
-                                        className="mt-4 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                                        className="mt-4 rounded-full border border-[#111319] bg-[#111319] px-6 py-2 text-white transition-colors hover:bg-transparent hover:text-[#111319]"
                                     >
                                         Filtreleri Temizle
                                     </button>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 md:gap-8">
                                     {filteredProducts.map((product, index) => {
                                         const previewImage = getFirstValidImage(product.images)
 
                                         return (
                                         <motion.div
                                             key={product.id}
-                                            initial={{ opacity: 0, y: 20 }}
+                                            initial={false}
                                             whileInView={{ opacity: 1, y: 0 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.6, delay: index * 0.05 }}
                                         >
-                                            <Link href={`/urun/${product.slug}`}>
-                                                <div className="group cursor-pointer">
-                                                    {/* Image */}
-                                                    <div className="relative h-96 overflow-hidden rounded-lg mb-4 bg-slate-100 border border-slate-200 p-2 flex items-center justify-center">
+                                            <Link href={`/urun/${product.slug}`} className="group block">
+                                                <article className="cursor-pointer overflow-hidden rounded-3xl border border-[#d8d8d6] bg-white p-3 shadow-[0_10px_28px_rgba(0,0,0,0.06)] transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_18px_42px_rgba(0,0,0,0.12)]">
+                                                    <div className="relative mb-4 flex h-80 items-center justify-center overflow-hidden rounded-2xl border border-[#d8d8d6] bg-[#f5f5f3] p-2">
                                                         {previewImage ? (
                                                             <Image
                                                                 src={previewImage}
@@ -444,7 +427,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                                         {/* Tags / Etiketler */}
                                                         <div className="absolute top-4 right-4 flex flex-col gap-1">
                                                             {product.tags && product.tags.map((tag, i) => (
-                                                                <span key={i} className="bg-black/70 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                                                <span key={i} className="rounded-full bg-[#111319]/90 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-white">
                                                                     {tag}
                                                                 </span>
                                                             ))}
@@ -452,11 +435,11 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                                     </div>
 
                                                     {/* Content */}
-                                                    <h3 className="text-xl font-serif font-bold mb-2 group-hover:text-rose transition-colors">
+                                                    <h3 className="mb-2 text-xl font-serif font-semibold uppercase tracking-[0.03em] text-[#12151b] transition-colors group-hover:text-[#323c4b]">
                                                         {product.name}
                                                     </h3>
-                                                    <p className="text-gray-600 text-sm mb-4">
-                                                        {product.description.substring(0, 60)}...
+                                                    <p className="mb-4 text-sm text-[#656b74]">
+                                                        {(product.description || '').substring(0, 75)}...
                                                     </p>
 
                                                     {/* Colors */}
@@ -483,23 +466,23 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                                     <div className="flex items-end justify-between">
                                                         <div>
                                                             <p className="text-gray-500 text-sm">Başlangıç fiyatı</p>
-                                                            <p className="text-2xl font-serif font-bold">₺{product.priceFrom.toLocaleString('tr-TR')}</p>
+                                                            <p className="text-2xl font-serif font-semibold text-[#12151b]">₺{product.priceFrom.toLocaleString('tr-TR')}</p>
                                                         </div>
-                                                        <motion.button
-                                                            whileHover={{ scale: 1.1 }}
-                                                            className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center"
+                                                        <motion.span
+                                                            whileHover={{ scale: 1.08 }}
+                                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1d222c] text-[#1d222c] transition group-hover:bg-[#1d222c] group-hover:text-white"
                                                         >
                                                             →
-                                                        </motion.button>
+                                                        </motion.span>
                                                     </div>
-                                                </div>
+                                                </article>
                                             </Link>
                                         </motion.div>
                                         )
                                     })}
                                 </div>
                             )}
-                        </motion.div>
+                        </div>
                     </div>
 
                     <AnimatePresence>
@@ -514,7 +497,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                 />
 
                                 <motion.div
-                                    className="fixed left-0 right-0 bottom-0 z-[80] lg:hidden bg-white rounded-t-2xl shadow-2xl"
+                                    className="fixed bottom-0 left-0 right-0 z-[80] rounded-t-3xl border border-[#d9dad8] bg-white shadow-2xl lg:hidden"
                                     initial={{ y: 32, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     exit={{ y: 32, opacity: 0 }}
@@ -526,7 +509,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                             <button
                                                 type="button"
                                                 onClick={() => setIsFilterOpen(false)}
-                                                className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-3 py-2"
+                                                className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-3 py-2"
                                                 aria-label="Filtreleri kapat"
                                             >
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -548,14 +531,14 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                                 onClick={() => {
                                                     clearFilters()
                                                 }}
-                                                className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium"
+                                                className="flex-1 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium"
                                             >
                                                 Temizle
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => setIsFilterOpen(false)}
-                                                className="flex-1 rounded-lg bg-gray-900 text-white px-4 py-3 text-sm font-medium"
+                                                className="flex-1 rounded-full bg-[#111319] px-4 py-3 text-sm font-medium text-white"
                                             >
                                                 Uygula
                                             </button>

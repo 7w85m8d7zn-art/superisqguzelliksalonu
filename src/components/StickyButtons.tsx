@@ -8,7 +8,7 @@ interface StickyButtonsProps {
 }
 
 export function StickyButtons({ contactNumbers }: StickyButtonsProps) {
-  const whatsappNumber = (contactNumbers?.whatsapp_number || '').replace(/\D/g, '') || '905306249382'
+  const whatsappNumber = (contactNumbers?.whatsapp_number || '').replace(/\D/g, '') || '905435167011'
   const whatsappMessage = encodeURIComponent(
     contactNumbers?.whatsapp_message || 'Merhaba, randevu almak istiyorum.'
   )
