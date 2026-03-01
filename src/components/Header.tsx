@@ -113,14 +113,6 @@ export function Header({ settings }: { settings?: Settings }) {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="hidden rounded-full border border-white/55 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:border-white hover:bg-white hover:text-[#0e1014] lg:inline-flex"
-              style={{ color: '#ffffff', borderColor: 'rgba(255,255,255,0.55)' }}
-            >
-              Yönetim
-            </Link>
-
             <button
               type="button"
               aria-label={isMenuOpen ? 'Menüyü kapat' : 'Menüyü aç'}
@@ -166,19 +158,12 @@ export function Header({ settings }: { settings?: Settings }) {
                   <Link
                     key={link.href}
                     href={link.href}
-                  className="border-b border-white/10 py-3 text-lg font-semibold uppercase tracking-[0.08em] text-white transition hover:text-white"
-                  style={{ color: '#ffffff', opacity: 0.9 }}
-                >
-                  {link.label}
-                </Link>
+                    className="border-b border-white/10 py-3 text-lg font-semibold uppercase tracking-[0.08em] text-white transition hover:text-white"
+                    style={{ color: '#ffffff', opacity: 0.9 }}
+                  >
+                    {link.label}
+                  </Link>
                 ))}
-                <Link
-                  href="/login"
-                  className="border-b border-white/10 py-3 text-lg font-semibold uppercase tracking-[0.08em] text-white transition hover:text-white"
-                  style={{ color: '#ffffff', opacity: 0.9 }}
-                >
-                  Yönetim
-                </Link>
               </nav>
             </motion.div>
           </>
