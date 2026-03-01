@@ -11,7 +11,7 @@ export interface FallbackSettingsData {
 }
 
 const STORE_FILE_PATH = join(process.cwd(), '.data', 'settings-fallback.json')
-const FILE_SYSTEM_READ_ONLY_CODES = new Set(['EROFS', 'EACCES', 'EPERM'])
+const FILE_SYSTEM_READ_ONLY_CODES = new Set(['EROFS', 'EACCES', 'EPERM', 'ENOENT', 'ENOTDIR'])
 let useInMemoryStoreOnly = false
 let inMemoryStore: FallbackSettingsData = { settings: {} }
 
