@@ -83,10 +83,24 @@ async function persistSetting(key: string, value: unknown) {
   return updatedRows[0]
 }
 
+const asErrorMessage = (err: unknown, fallback: string) => {
+  if (err instanceof Error && err.message) return err.message
+  return fallback
+}
+
+async function persistSettingWithFallback(key: string, value: unknown) {
+  try {
+    return await persistSetting(key, value)
+  } catch (err) {
+    console.warn('persistSetting failed, writing to fallback store:', err)
+    return await upsertFallbackSetting(key, value)
+  }
+}
+
 export async function GET() {
   try {
+    const localSettingsMap = await getFallbackSettingsMap()
     if (!isSupabaseConfigured) {
-      const localSettingsMap = await getFallbackSettingsMap()
       return NextResponse.json(localSettingsMap, { headers: noCacheHeaders })
     }
 
@@ -96,9 +110,10 @@ export async function GET() {
       .order('updated_at', { ascending: false })
 
     if (error) {
+      console.warn('Supabase settings GET failed, using fallback:', error.message)
       return NextResponse.json(
-        { error: error.message, details: error.details },
-        { status: 500, headers: noCacheHeaders }
+        { ...localSettingsMap, __warning: error.message },
+        { headers: noCacheHeaders }
       )
     }
 
@@ -111,13 +126,12 @@ export async function GET() {
     }, {})
 
     return NextResponse.json(map, { headers: noCacheHeaders })
-  } catch (err: any) {
+  } catch (err: unknown) {
+    console.warn('Settings GET failed, returning fallback data:', err)
+    const localSettingsMap = await getFallbackSettingsMap().catch(() => ({}))
     return NextResponse.json(
-      {
-        error: err?.message || 'Unknown error',
-        details: err?.stack,
-      },
-      { status: 500, headers: noCacheHeaders }
+      { ...localSettingsMap, __warning: asErrorMessage(err, 'settings fetch failed') },
+      { headers: noCacheHeaders }
     )
   }
 }
@@ -153,14 +167,13 @@ export async function POST(req: NextRequest) {
       finalValue = { ...existingObj, ...filteredIncoming }
     }
 
-    const saved = await persistSetting(key, finalValue)
+    const saved = await persistSettingWithFallback(key, finalValue)
     return NextResponse.json({ success: true, data: saved }, { headers: noCacheHeaders })
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
       {
         success: false,
-        error: err?.message || 'Unknown error',
-        details: err?.stack,
+        error: asErrorMessage(err, 'Unknown error'),
       },
       { status: 500, headers: noCacheHeaders }
     )
@@ -175,11 +188,11 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Missing key' }, { status: 400, headers: noCacheHeaders })
     }
 
-    const saved = await persistSetting(key, parseIfJson(value))
+    const saved = await persistSettingWithFallback(key, parseIfJson(value))
     return NextResponse.json(saved, { headers: noCacheHeaders })
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: err?.message || 'Update failed' },
+      { error: asErrorMessage(err, 'Update failed') },
       { status: 500, headers: noCacheHeaders }
     )
   }
@@ -190,9 +203,9 @@ export async function PATCH() {
   try {
     const { totalVisitors } = await incrementVisitorStats()
     return NextResponse.json({ visitor_count: totalVisitors }, { headers: noCacheHeaders })
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { visitor_count: 1, warning: err?.message || 'Server error' },
+      { visitor_count: 1, warning: asErrorMessage(err, 'Server error') },
       { headers: noCacheHeaders }
     )
   }

@@ -36,6 +36,23 @@ const defaultHomepage = {
   featured_products: localProducts.filter(p => p.featured).map(p => p.id),
 }
 
+const parseJsonSafe = <T>(value: unknown, fallback: T): T => {
+  if (value === null || value === undefined) return fallback
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value) as T
+    } catch {
+      return fallback
+    }
+  }
+  return value as T
+}
+
+const asErrorMessage = (err: unknown, fallback: string) => {
+  if (err instanceof Error && err.message) return err.message
+  return fallback
+}
+
 async function getLatestHomepageSetting() {
   if (!isSupabaseConfigured) {
     const value = await getFallbackSettingValueByKey('homepage_data')
@@ -66,21 +83,26 @@ export async function GET() {
       return NextResponse.json(defaultHomepage)
     }
 
-    const homepageData = typeof value === 'string' ? JSON.parse(value) : value
+    const homepageData = parseJsonSafe<Record<string, unknown>>(value, {})
     return NextResponse.json({ ...defaultHomepage, ...homepageData })
-  } catch (err: any) {
-    console.warn('Homepage GET failed:', err?.message || err)
+  } catch (err: unknown) {
+    console.warn('Homepage GET failed:', asErrorMessage(err, 'unknown error'))
     return NextResponse.json(defaultHomepage)
   }
 }
 
 export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json()
+    let body: Record<string, unknown> = {}
+    try {
+      body = (await req.json()) as Record<string, unknown>
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
     console.log('PUT request body:', body)
 
     // Filter out empty values to preserve existing data
-    const filteredData: any = {}
+    const filteredData: Record<string, unknown> = {}
     for (const [key, value] of Object.entries(body)) {
       // Only include non-empty values
       if (value !== '' && value !== null && value !== undefined) {
@@ -98,9 +120,7 @@ export async function PUT(req: NextRequest) {
     // Fetch existing data to merge with
     const { value: existingValue } = await getLatestHomepageSetting()
 
-    const existingData = existingValue
-      ? (typeof existingValue === 'string' ? JSON.parse(existingValue) : existingValue)
-      : {}
+    const existingData = parseJsonSafe<Record<string, unknown>>(existingValue, {})
 
     // Merge: existing data + new non-empty values
     const mergedData = { ...existingData, ...filteredData }
@@ -123,7 +143,9 @@ export async function PUT(req: NextRequest) {
 
     if (updateError) {
       console.warn('Supabase homepage update step failed:', updateError.message)
-      return NextResponse.json({ error: updateError.message }, { status: 500 })
+      await upsertFallbackSetting('homepage_data', mergedData)
+      revalidatePath('/')
+      return NextResponse.json({ ...mergedData, __warning: updateError.message })
     }
 
     if (!updatedRows || updatedRows.length === 0) {
@@ -139,7 +161,9 @@ export async function PUT(req: NextRequest) {
 
       if (insertError) {
         console.warn('Supabase homepage insert step failed:', insertError.message)
-        return NextResponse.json({ error: insertError.message }, { status: 500 })
+        await upsertFallbackSetting('homepage_data', mergedData)
+        revalidatePath('/')
+        return NextResponse.json({ ...mergedData, __warning: insertError.message })
       }
     }
 
@@ -147,8 +171,8 @@ export async function PUT(req: NextRequest) {
 
     console.log('Homepage update successful')
     return NextResponse.json(mergedData)
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('PUT error:', err)
-    return NextResponse.json({ error: err?.message || 'Invalid JSON' }, { status: 400 })
+    return NextResponse.json({ error: asErrorMessage(err, 'Update failed') }, { status: 500 })
   }
 }

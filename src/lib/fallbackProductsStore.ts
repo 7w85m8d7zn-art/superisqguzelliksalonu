@@ -10,6 +10,9 @@ export interface FallbackProductsData {
 }
 
 const STORE_FILE_PATH = join(process.cwd(), '.data', 'products-fallback.json')
+const FILE_SYSTEM_READ_ONLY_CODES = new Set(['EROFS', 'EACCES', 'EPERM'])
+let useInMemoryStoreOnly = false
+let inMemoryStore: FallbackProductsData = { products: [], serviceDetailsMap: {} }
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -47,6 +50,21 @@ const buildInitialData = (): FallbackProductsData => {
   }
 }
 
+const getErrorCode = (error: unknown): string => {
+  if (typeof error === 'object' && error !== null && 'code' in error) {
+    return String((error as { code?: unknown }).code || '')
+  }
+  return ''
+}
+
+const markReadOnlyStore = (error: unknown) => {
+  const code = getErrorCode(error)
+  if (FILE_SYSTEM_READ_ONLY_CODES.has(code)) {
+    useInMemoryStoreOnly = true
+    console.warn('Fallback product store switched to in-memory mode:', code)
+  }
+}
+
 const normalizeFallbackData = (value: unknown): FallbackProductsData => {
   if (!isRecord(value)) return buildInitialData()
 
@@ -74,41 +92,94 @@ const normalizeFallbackData = (value: unknown): FallbackProductsData => {
 }
 
 const ensureStoreFile = async (): Promise<void> => {
+  if (useInMemoryStoreOnly) return
+
   await mkdir(dirname(STORE_FILE_PATH), { recursive: true })
 
   try {
     await readFile(STORE_FILE_PATH, 'utf8')
   } catch (error) {
-    const errorCode =
-      typeof error === 'object' && error !== null && 'code' in error
-        ? String((error as { code?: unknown }).code)
-        : ''
+    const errorCode = getErrorCode(error)
 
     if (errorCode !== 'ENOENT') {
+      markReadOnlyStore(error)
+      if (useInMemoryStoreOnly) return
       throw error
     }
 
-    await writeFile(STORE_FILE_PATH, JSON.stringify(buildInitialData(), null, 2), 'utf8')
+    try {
+      await writeFile(STORE_FILE_PATH, JSON.stringify(buildInitialData(), null, 2), 'utf8')
+    } catch (writeError) {
+      markReadOnlyStore(writeError)
+      if (!useInMemoryStoreOnly) throw writeError
+    }
   }
 }
 
 export async function readFallbackProductsData(): Promise<FallbackProductsData> {
-  await ensureStoreFile()
+  try {
+    await ensureStoreFile()
+  } catch (error) {
+    markReadOnlyStore(error)
+    if (useInMemoryStoreOnly) {
+      const normalized = normalizeFallbackData(inMemoryStore)
+      if (!normalized.products.length) {
+        const initialData = buildInitialData()
+        inMemoryStore = initialData
+        return initialData
+      }
+      return normalized
+    }
+    throw error
+  }
+
+  if (useInMemoryStoreOnly) {
+    const normalized = normalizeFallbackData(inMemoryStore)
+    if (!normalized.products.length) {
+      const initialData = buildInitialData()
+      inMemoryStore = initialData
+      return initialData
+    }
+    return normalized
+  }
 
   try {
     const raw = await readFile(STORE_FILE_PATH, 'utf8')
     const parsed = JSON.parse(raw) as unknown
-    return normalizeFallbackData(parsed)
+    const normalized = normalizeFallbackData(parsed)
+    inMemoryStore = normalized
+    return normalized
   } catch (error) {
     console.warn('Fallback product store read failed, resetting store:', error)
     const initialData = buildInitialData()
-    await writeFile(STORE_FILE_PATH, JSON.stringify(initialData, null, 2), 'utf8')
+    inMemoryStore = initialData
+    try {
+      await writeFile(STORE_FILE_PATH, JSON.stringify(initialData, null, 2), 'utf8')
+    } catch (writeError) {
+      markReadOnlyStore(writeError)
+    }
     return initialData
   }
 }
 
 export async function writeFallbackProductsData(nextData: FallbackProductsData): Promise<void> {
-  await ensureStoreFile()
   const normalizedData = normalizeFallbackData(nextData)
-  await writeFile(STORE_FILE_PATH, JSON.stringify(normalizedData, null, 2), 'utf8')
+  inMemoryStore = normalizedData
+
+  try {
+    await ensureStoreFile()
+  } catch (error) {
+    markReadOnlyStore(error)
+    if (useInMemoryStoreOnly) return
+    throw error
+  }
+
+  if (useInMemoryStoreOnly) return
+
+  try {
+    await writeFile(STORE_FILE_PATH, JSON.stringify(normalizedData, null, 2), 'utf8')
+  } catch (error) {
+    markReadOnlyStore(error)
+    if (!useInMemoryStoreOnly) throw error
+  }
 }
