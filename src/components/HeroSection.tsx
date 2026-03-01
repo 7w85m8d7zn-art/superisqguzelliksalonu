@@ -19,7 +19,7 @@ export function HeroSection({ hero }: { hero?: HomepageData }) {
   const heroImage = heroData.hero_image || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=2000'
 
   return (
-    <section className="relative flex min-h-[calc(100vh-84px)] items-end overflow-hidden pb-12 pt-20 md:pb-16 md:pt-24">
+    <section className="relative flex min-h-[66vh] max-h-[780px] items-center overflow-hidden py-10 md:min-h-[72vh] md:py-14 lg:min-h-[74vh]">
       <Image
         src={heroImage}
         alt={heroData.hero_title || 'Su Perisi Güzellik Salonu'}
@@ -27,7 +27,7 @@ export function HeroSection({ hero }: { hero?: HomepageData }) {
         priority
         sizes="100vw"
         quality={78}
-        className="absolute inset-0 object-cover"
+        className="absolute inset-0 object-cover object-center"
         style={{ filter: `brightness(${brightness})` }}
       />
 

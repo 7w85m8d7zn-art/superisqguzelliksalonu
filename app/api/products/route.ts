@@ -169,51 +169,62 @@ async function persistProductServiceDetails(productId: string, details: string[]
   await persistSetting(PRODUCT_SERVICE_DETAILS_KEY, detailsMap)
 }
 
-export async function GET() {
-  if (!isSupabaseConfigured) {
-    const fallbackData = await readFallbackProductsData()
-    const products = fallbackData.products.map((productRow) => {
-      const normalized = sanitizeProductPayload(productRow)
-      const title = typeof productRow.title === 'string' ? productRow.title : ''
-      const productId = typeof productRow.id === 'string' ? productRow.id : ''
+async function buildFallbackProductsResponse() {
+  const fallbackData = await readFallbackProductsData()
 
-      return {
-        ...normalized,
-        name: title || (typeof productRow.name === 'string' ? productRow.name : ''),
-        service_details: productId ? fallbackData.serviceDetailsMap[productId] || [] : [],
-      }
-    })
-
-    return NextResponse.json(products, { headers: noCacheHeaders })
-  }
-
-  const { data: supabaseData, error } = await supabaseServer
-    .from('products')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  if (error) {
-    console.warn('Supabase products fetch failed:', error.message)
-    return NextResponse.json([], { headers: noCacheHeaders })
-  }
-
-  const serviceDetailsMap = await getProductServiceDetailsMap().catch((err: unknown) => {
-    console.warn('Service details map fetch failed:', err)
-    return {}
-  })
-
-  const products = (supabaseData || []).map((productRow) => {
+  return fallbackData.products.map((productRow) => {
     const normalized = sanitizeProductPayload(productRow)
     const title = typeof productRow.title === 'string' ? productRow.title : ''
+    const productId = typeof productRow.id === 'string' ? productRow.id : ''
 
     return {
       ...normalized,
       name: title || (typeof productRow.name === 'string' ? productRow.name : ''),
-      service_details: serviceDetailsMap[productRow.id] || [],
+      service_details: productId ? fallbackData.serviceDetailsMap[productId] || [] : [],
     }
   })
+}
 
-  return NextResponse.json(products, { headers: noCacheHeaders })
+export async function GET() {
+  try {
+    if (!isSupabaseConfigured) {
+      const fallbackProducts = await buildFallbackProductsResponse()
+      return NextResponse.json(fallbackProducts, { headers: noCacheHeaders })
+    }
+
+    const { data: supabaseData, error } = await supabaseServer
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.warn('Supabase products fetch failed:', error.message)
+      const fallbackProducts = await buildFallbackProductsResponse().catch(() => [])
+      return NextResponse.json(fallbackProducts, { headers: noCacheHeaders })
+    }
+
+    const serviceDetailsMap = await getProductServiceDetailsMap().catch((err: unknown) => {
+      console.warn('Service details map fetch failed:', err)
+      return {}
+    })
+
+    const products = (supabaseData || []).map((productRow) => {
+      const normalized = sanitizeProductPayload(productRow)
+      const title = typeof productRow.title === 'string' ? productRow.title : ''
+
+      return {
+        ...normalized,
+        name: title || (typeof productRow.name === 'string' ? productRow.name : ''),
+        service_details: serviceDetailsMap[productRow.id] || [],
+      }
+    })
+
+    return NextResponse.json(products, { headers: noCacheHeaders })
+  } catch (error) {
+    console.warn('Products route GET failed, using fallback:', error)
+    const fallbackProducts = await buildFallbackProductsResponse().catch(() => [])
+    return NextResponse.json(fallbackProducts, { headers: noCacheHeaders })
+  }
 }
 
 export async function POST(req: NextRequest) {

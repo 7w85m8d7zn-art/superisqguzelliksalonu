@@ -40,12 +40,20 @@ export async function GET() {
       const fallbackData = await readFallbackProductsData()
       totalProducts = fallbackData.products.length
     } else {
-      const productCountResult = await supabaseServer
-        .from('products')
-        .select('id', { count: 'exact', head: true })
+      try {
+        const productCountResult = await supabaseServer
+          .from('products')
+          .select('id', { count: 'exact', head: true })
 
-      if (!productCountResult.error) {
-        totalProducts = productCountResult.count || 0
+        if (!productCountResult.error) {
+          totalProducts = productCountResult.count || 0
+        } else {
+          const fallbackData = await readFallbackProductsData()
+          totalProducts = fallbackData.products.length
+        }
+      } catch {
+        const fallbackData = await readFallbackProductsData()
+        totalProducts = fallbackData.products.length
       }
     }
 
@@ -71,6 +79,23 @@ export async function GET() {
     )
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'dashboard fetch failed'
-    return NextResponse.json({ error: message }, { status: 500, headers: noCacheHeaders })
+    const fallbackAppointments: Appointment[] = []
+    const fallbackVisitors: Record<string, number> = {}
+
+    return NextResponse.json(
+      {
+        error: message,
+        summary: {
+          totalProducts: 0,
+          totalVisitors: 0,
+          totalAppointments: 0,
+          pendingAppointments: 0,
+          approvedAppointments: 0,
+          rejectedAppointments: 0,
+        },
+        series: buildDashboardSeries(fallbackAppointments, fallbackVisitors, 7),
+      },
+      { headers: noCacheHeaders }
+    )
   }
 }
