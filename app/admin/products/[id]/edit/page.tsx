@@ -23,14 +23,20 @@ interface ApiProduct {
   service_details?: string[]
   category?: string
   colors?: string[]
+  sizes?: string[]
   tags?: string[]
   images?: string[]
   featured?: boolean
 }
 
-const DEFAULT_CATEGORIES = ['Özel Dikim', 'Kiralama', 'Hazır Giyim', 'Aksesuar']
-const DEFAULT_COLORS = ['Beyaz', 'Krem', 'Pudra', 'Gümüş', 'Peach', 'Altın']
-const DEFAULT_TAGS = ['Topuz', 'Kesim', 'Dalga', 'Düzleştirme', 'Renklendirme', 'Özel Gün', 'Günlük', 'Bukle', 'Bohem', 'Bakım', 'Özel']
+const SELECTABLE_FILTER_TYPES: Filter['type'][] = ['category', 'color', 'size', 'tag']
+const FILTER_TYPE_BADGES: Record<Filter['type'], string> = {
+  category: 'Tekli seçim',
+  color: 'Çoklu seçim',
+  size: 'Çoklu seçim',
+  tag: 'Çoklu seçim',
+  price: 'Bilgi',
+}
 
 export default function EditProductPage() {
   const router = useRouter()
@@ -40,9 +46,7 @@ export default function EditProductPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [showPopup, setShowPopup] = useState(false)
-  const [categories, setCategories] = useState<string[]>([])
-  const [colors, setColors] = useState<string[]>([])
-  const [tags, setTags] = useState<string[]>([])
+  const [activeFilters, setActiveFilters] = useState<Filter[]>([])
   
   const [formData, setFormData] = useState({
     title: '',
@@ -51,43 +55,47 @@ export default function EditProductPage() {
     service_details: '',
     category: '',
     colors: [] as string[],
+    sizes: [] as string[],
     tags: [] as string[],
     images: [''],
     featured: false,
   })
 
   const hasLegacyInlineImages = formData.images.some((image) => image.trim().startsWith('data:image/'))
-  const availableTags = Array.from(new Set([...tags, ...formData.tags]))
 
   // Filtreleri ve Model, çek
   useEffect(() => {
     const stored = localStorage.getItem('product_filters')
     if (stored) {
       try {
-        const parsed: Filter[] = JSON.parse(stored)
-        const categoryValues = parsed
-          .filter((filter) => filter.type === 'category' && filter.active)
-          .flatMap((filter) => filter.values)
-        const colorValues = parsed
-          .filter((filter) => filter.type === 'color' && filter.active)
-          .flatMap((filter) => filter.values)
-        const tagValues = parsed
-          .filter((filter) => filter.type === 'tag' && filter.active)
-          .flatMap((filter) => filter.values)
+        const parsed = JSON.parse(stored) as Filter[]
+        if (Array.isArray(parsed)) {
+          const normalizedFilters = parsed
+            .filter((filter) => filter && typeof filter === 'object')
+            .map((filter) => ({
+              ...filter,
+              name: (filter.name || '').trim(),
+              values: Array.isArray(filter.values)
+                ? filter.values.map((value) => String(value || '').trim()).filter((value) => value.length > 0)
+                : [],
+            }))
+            .filter((filter) =>
+              filter.active &&
+              filter.name.length > 0 &&
+              filter.values.length > 0 &&
+              SELECTABLE_FILTER_TYPES.includes(filter.type)
+            )
 
-        setCategories(categoryValues.length > 0 ? categoryValues : DEFAULT_CATEGORIES)
-        setColors(colorValues.length > 0 ? colorValues : DEFAULT_COLORS)
-        setTags(tagValues.length > 0 ? tagValues : DEFAULT_TAGS)
+          setActiveFilters(normalizedFilters)
+        } else {
+          setActiveFilters([])
+        }
       } catch (e) {
         console.error(e)
-        setCategories(DEFAULT_CATEGORIES)
-        setColors(DEFAULT_COLORS)
-        setTags(DEFAULT_TAGS)
+        setActiveFilters([])
       }
     } else {
-      setCategories(DEFAULT_CATEGORIES)
-      setColors(DEFAULT_COLORS)
-      setTags(DEFAULT_TAGS)
+      setActiveFilters([])
     }
 
     // Model, çek
@@ -101,8 +109,6 @@ export default function EditProductPage() {
       const product = products.find((p) => p.id === productId)
       
       if (product) {
-        const productTags = Array.isArray(product.tags) ? product.tags : []
-
         setFormData({
           title: product.title || product.name || '',
           price_from: (product.price_from || product.priceFrom || 0).toString(),
@@ -110,14 +116,11 @@ export default function EditProductPage() {
           service_details: Array.isArray(product.service_details) ? product.service_details.join('\n') : '',
           category: product.category || '',
           colors: product.colors || [],
-          tags: productTags,
+          sizes: product.sizes || [],
+          tags: product.tags || [],
           images: product.images?.length ? product.images : [''],
           featured: product.featured || false,
         })
-
-        if (productTags.length > 0) {
-          setTags((prev) => Array.from(new Set([...prev, ...productTags])))
-        }
       }
     } catch (e) {
       console.error('Model çekme hatası:', e)
@@ -143,6 +146,7 @@ export default function EditProductPage() {
       service_details: serviceDetails,
       category: formData.category,
       colors: formData.colors,
+      sizes: formData.sizes,
       tags: formData.tags,
       images: formData.images.filter(img => img.trim() !== ''),
       featured: formData.featured,
@@ -196,6 +200,62 @@ export default function EditProductPage() {
         ...prev,
         images: merged.length > 0 ? merged : [''],
       }
+    })
+  }
+
+  function isFilterValueSelected(filterType: Filter['type'], value: string): boolean {
+    if (filterType === 'category') {
+      return formData.category === value
+    }
+    if (filterType === 'color') {
+      return formData.colors.includes(value)
+    }
+    if (filterType === 'size') {
+      return formData.sizes.includes(value)
+    }
+    if (filterType === 'tag') {
+      return formData.tags.includes(value)
+    }
+    return false
+  }
+
+  function toggleFilterValue(filterType: Filter['type'], value: string) {
+    setFormData((prev) => {
+      if (filterType === 'category') {
+        return {
+          ...prev,
+          category: prev.category === value ? '' : value,
+        }
+      }
+
+      if (filterType === 'color') {
+        return {
+          ...prev,
+          colors: prev.colors.includes(value)
+            ? prev.colors.filter((item) => item !== value)
+            : [...prev.colors, value],
+        }
+      }
+
+      if (filterType === 'size') {
+        return {
+          ...prev,
+          sizes: prev.sizes.includes(value)
+            ? prev.sizes.filter((item) => item !== value)
+            : [...prev.sizes, value],
+        }
+      }
+
+      if (filterType === 'tag') {
+        return {
+          ...prev,
+          tags: prev.tags.includes(value)
+            ? prev.tags.filter((item) => item !== value)
+            : [...prev.tags, value],
+        }
+      }
+
+      return prev
     })
   }
 
@@ -271,85 +331,40 @@ export default function EditProductPage() {
             />
           </div>
 
-          {/* Koleksiyon Filtreleri */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => {
-                    const newCategory = formData.category === category ? '' : category
-                    setFormData({ ...formData, category: newCategory })
-                  }}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
-                    formData.category === category
-                      ? 'bg-black text-white border-black'
-                      : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Renk Seçimi */}
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Renkler</label>
-            <div className="flex flex-wrap gap-2">
-              {colors.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => {
-                    const newColors = formData.colors.includes(color)
-                      ? formData.colors.filter(c => c !== color)
-                      : [...formData.colors, color]
-                    setFormData({ ...formData, colors: newColors })
-                  }}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
-                    formData.colors.includes(color)
-                      ? 'bg-black text-white border-black'
-                      : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                  }`}
-                >
-                  {color}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Etiket Seçimi */}
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Etiketler</label>
-            {availableTags.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {availableTags.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => {
-                      const newTags = formData.tags.includes(tag)
-                        ? formData.tags.filter((item) => item !== tag)
-                        : [...formData.tags, tag]
-                      setFormData({ ...formData, tags: newTags })
-                    }}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
-                      formData.tags.includes(tag)
-                        ? 'bg-black text-white border-black'
-                        : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
+          {/* Dinamik Filtreler */}
+          {activeFilters.length > 0 ? (
+            activeFilters.map((filter) => (
+              <div key={filter.id} className="md:col-span-2">
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <label className="block text-sm font-medium text-gray-700">{filter.name}</label>
+                  <span className="rounded-full border border-gray-300 px-2 py-0.5 text-[11px] font-semibold text-gray-600">
+                    {FILTER_TYPE_BADGES[filter.type]}
+                  </span>
+                </div>
+                <p className="mb-2 text-xs font-semibold text-gray-500">Başlıklar</p>
+                <div className="flex flex-wrap gap-2">
+                  {filter.values.map((value) => (
+                    <button
+                      key={`${filter.id}-${value}`}
+                      type="button"
+                      onClick={() => toggleFilterValue(filter.type, value)}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                        isFilterValueSelected(filter.type, value)
+                          ? 'bg-black text-white border-black'
+                          : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      {value}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ) : (
-              <p className="text-xs text-gray-500">Önce admin filtrelerinden etiket tanımlayın.</p>
-            )}
-          </div>
+            ))
+          ) : (
+            <div className="md:col-span-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-2 text-xs text-gray-500">
+              Aktif filtre bulunamadı. Filtre yönetiminden yeni filtre eklediğinizde burada otomatik görünür.
+            </div>
+          )}
 
           {/* Açıklama */}
 
