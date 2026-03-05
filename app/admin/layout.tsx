@@ -1,10 +1,15 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import AdminShell from '../../src/components/admin/AdminShell'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Admin Paneli - Su Perisi Güzellik Salonu',
+  robots: {
+    index: false,
+    follow: false,
+  },
 }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

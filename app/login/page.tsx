@@ -1,5 +1,6 @@
 import LoginForm from '../../src/components/admin/LoginForm'
 import { Montserrat } from 'next/font/google'
+import type { Metadata } from 'next'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -7,7 +8,13 @@ const montserrat = Montserrat({
   display: 'swap',
 })
 
-export const metadata = { title: 'Yönetici Girişi' }
+export const metadata: Metadata = {
+  title: 'Yonetici Girisi',
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default function LoginPage() {
   return (

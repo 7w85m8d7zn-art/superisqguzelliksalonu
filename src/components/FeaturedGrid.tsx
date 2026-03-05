@@ -63,7 +63,7 @@ export function FeaturedGrid({
                             unoptimized
                             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                             quality={100}
-                            className="object-cover"
+                            className="object-contain p-2"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-sm text-gray-500">Görsel Yok</div>

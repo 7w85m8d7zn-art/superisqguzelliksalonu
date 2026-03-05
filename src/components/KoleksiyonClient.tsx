@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { StickyButtons } from '@/src/components/StickyButtons'
 import { PageHero } from '@/src/components/PageHero'
 import { ContactNumbers, Product } from '@/src/types'
+import { slugifySegment } from '@/src/lib/seo'
 
 type SortOption = 'featured' | 'price-low' | 'price-high' | 'newest'
 
@@ -21,14 +22,23 @@ interface Filter {
 interface KoleksiyonClientProps {
     initialProducts: Product[]
     contactNumbers: ContactNumbers
+    initialSelectedTags?: string[]
+    pageTitle?: string
+    pageSubtitle?: string
 }
 
-export function KoleksiyonClient({ initialProducts, contactNumbers }: KoleksiyonClientProps) {
+export function KoleksiyonClient({
+    initialProducts,
+    contactNumbers,
+    initialSelectedTags = [],
+    pageTitle = 'Koleksiyonlar',
+    pageSubtitle = 'Stiliniz ve ihtiyacınız için hazırlanan hizmetleri filtreleyerek hızlıca keşfedin.',
+}: KoleksiyonClientProps) {
     const products = initialProducts
     const [search, setSearch] = useState('')
     const [selectedCategories, setSelectedCategories] = useState<string[]>([])
     const [selectedColors, setSelectedColors] = useState<string[]>([])
-    const [selectedTags, setSelectedTags] = useState<string[]>([])
+    const [selectedTags, setSelectedTags] = useState<string[]>(initialSelectedTags)
     const [sortBy, setSortBy] = useState<SortOption>('featured')
     const [isFilterOpen, setIsFilterOpen] = useState(false)
     const [customFilters, setCustomFilters] = useState<Filter[]>([])
@@ -314,8 +324,8 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
         <>
             <main className="min-h-screen bg-[#f2f1ef] pb-20">
                 <PageHero
-                    title="Koleksiyonlar"
-                    subtitle="Stiliniz ve ihtiyacınız için hazırlanan hizmetleri filtreleyerek hızlıca keşfedin."
+                    title={pageTitle}
+                    subtitle={pageSubtitle}
                 />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
@@ -374,6 +384,31 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                 </div>
                             </div>
 
+                            {/* SEO Tag Links */}
+                            {allTags.length > 0 && (
+                                <div className="mb-8 rounded-2xl border border-[#d8d8d6] bg-white px-4 py-4">
+                                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#596270]">
+                                        Kırşehir Hizmet Etiketleri
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {allTags.map((tag) => {
+                                            const tagSlug = slugifySegment(tag)
+                                            if (!tagSlug) return null
+
+                                            return (
+                                                <Link
+                                                    key={tag}
+                                                    href={`/koleksiyonlar/etiket/${tagSlug}`}
+                                                    className="rounded-full border border-[#cfd2d7] bg-white px-3 py-1.5 text-xs font-semibold text-[#2f3949] transition-colors hover:border-[#111319] hover:text-[#111319]"
+                                                >
+                                                    Kırşehir {tag}
+                                                </Link>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Products Grid */}
                             {products.length === 0 ? (
                                 <div className="text-center py-20">
@@ -418,7 +453,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                                                 unoptimized
                                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                                 quality={100}
-                                                                className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                                                                className="object-contain p-2 transition-transform duration-300 group-hover:scale-[1.02]"
                                                             />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-gray-400">

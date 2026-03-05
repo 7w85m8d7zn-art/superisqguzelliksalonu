@@ -1,6 +1,13 @@
 import React from 'react'
+import type { Metadata } from 'next'
 
-export const metadata = { title: 'Giriş' }
+export const metadata: Metadata = {
+  title: 'Giris',
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {
     return children

@@ -62,7 +62,7 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                     unoptimized
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     quality={100}
-                    className="rounded-xl object-cover"
+                    className="rounded-xl object-contain p-2"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-gray-500">Görsel Yok</div>
@@ -87,7 +87,7 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                       unoptimized
                       sizes="96px"
                       quality={100}
-                      className="bg-[#f4f4f2] object-cover"
+                      className="bg-[#f4f4f2] object-contain p-1"
                     />
                   </button>
                 ))}
@@ -162,7 +162,7 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                                 unoptimized
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                                 quality={100}
-                                className="rounded-md object-cover"
+                                className="rounded-md object-contain p-1"
                               />
                             ) : (
                               <div className="flex h-full w-full items-center justify-center text-gray-500">Görsel Yok</div>

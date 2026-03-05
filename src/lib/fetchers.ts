@@ -14,6 +14,7 @@ import {
     getFallbackSettingValueByKey,
     getFallbackSettingsMap,
 } from '@/src/lib/fallbackSettingsStore'
+import { buildProductSeoSlug } from '@/src/lib/seo'
 
 const PRODUCT_SERVICE_DETAILS_KEY = 'product_service_details'
 const CONTACT_NUMBERS_KEY = 'contact_numbers'
@@ -193,7 +194,7 @@ const normalizeProduct = (p: any, serviceDetailsMap: Record<string, string[]>): 
     service_details: serviceDetailsMap[p.id] || sanitizeStringArray(p.service_details),
     tags: Array.isArray(p.tags) ? p.tags : [],
     category: p.category || '',
-    slug: p.slug || p.id,
+    slug: buildProductSeoSlug(p.title || p.name || 'Hizmet', p.id),
     featured: p.featured || false,
 })
 
@@ -338,7 +339,7 @@ export async function getProducts(): Promise<Product[]> {
             console.warn('Using local products fallback due to:', error?.message)
             return localProducts.map(p => ({
                 id: p.id,
-                slug: p.slug,
+                slug: buildProductSeoSlug(p.name, p.id),
                 name: p.name,
                 description: p.description,
                 priceFrom: p.priceFrom,
@@ -359,7 +360,7 @@ export async function getProducts(): Promise<Product[]> {
         const serviceDetailsMap = await getProductServiceDetailsMap()
         return localProducts.map(p => ({
             id: p.id,
-            slug: p.slug,
+            slug: buildProductSeoSlug(p.name, p.id),
             name: p.name,
             description: p.description,
             priceFrom: p.priceFrom,
