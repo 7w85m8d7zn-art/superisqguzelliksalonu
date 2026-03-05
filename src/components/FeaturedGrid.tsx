@@ -54,15 +54,16 @@ export function FeaturedGrid({
                 >
                   <Link href={`/urun/${product.slug}`} className="group block">
                     <article className="overflow-hidden rounded-3xl border border-[#d8d8d6] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_18px_44px_rgba(0,0,0,0.12)]">
-                      <div className="relative h-80 border-b border-[#ecebe9] bg-[#f6f6f4] p-3">
+                      <div className="relative h-80 border-b border-[#ecebe9] bg-[#f6f6f4]">
                         {previewImage ? (
                           <Image
                             src={previewImage}
                             alt={product.name}
                             fill
+                            unoptimized
                             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                            quality={72}
-                            className="object-contain p-2"
+                            quality={100}
+                            className="object-cover"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-sm text-gray-500">Görsel Yok</div>
@@ -81,13 +82,7 @@ export function FeaturedGrid({
                           {(product.description || '').substring(0, 88)}...
                         </p>
 
-                        <div className="mt-4 flex items-end justify-between">
-                          <div>
-                            <p className="text-xs uppercase tracking-[0.14em] text-[#8b9097]">Başlangıç</p>
-                            <p className="text-2xl font-serif font-semibold text-[#111319]">
-                              ₺{(product.priceFrom ?? product.price_from ?? 0).toLocaleString('tr-TR')}
-                            </p>
-                          </div>
+                        <div className="mt-4 flex justify-end">
                           <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1d222c] text-sm font-semibold text-[#1d222c] transition group-hover:bg-[#1d222c] group-hover:text-white">
                             →
                           </span>

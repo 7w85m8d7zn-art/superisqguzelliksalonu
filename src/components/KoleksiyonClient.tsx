@@ -409,15 +409,16 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                         >
                                             <Link href={`/urun/${product.slug}`} className="group block">
                                                 <article className="cursor-pointer overflow-hidden rounded-3xl border border-[#d8d8d6] bg-white p-3 shadow-[0_10px_28px_rgba(0,0,0,0.06)] transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_18px_42px_rgba(0,0,0,0.12)]">
-                                                    <div className="relative mb-4 flex h-80 items-center justify-center overflow-hidden rounded-2xl border border-[#d8d8d6] bg-[#f5f5f3] p-2">
+                                                    <div className="relative mb-4 h-80 overflow-hidden rounded-2xl border border-[#d8d8d6] bg-[#f5f5f3]">
                                                         {previewImage ? (
                                                             <Image
                                                                 src={previewImage}
                                                                 alt={product.name}
                                                                 fill
+                                                                unoptimized
                                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                                quality={70}
-                                                                className="rounded-md object-contain p-2 transition-transform duration-300 group-hover:scale-[1.02]"
+                                                                quality={100}
+                                                                className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                                                             />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -463,11 +464,7 @@ export function KoleksiyonClient({ initialProducts, contactNumbers }: Koleksiyon
                                                         ))}
                                                     </div>
 
-                                                    <div className="flex items-end justify-between">
-                                                        <div>
-                                                            <p className="text-gray-500 text-sm">Başlangıç fiyatı</p>
-                                                            <p className="text-2xl font-serif font-semibold text-[#12151b]">₺{product.priceFrom.toLocaleString('tr-TR')}</p>
-                                                        </div>
+                                                    <div className="flex justify-end">
                                                         <motion.span
                                                             whileHover={{ scale: 1.08 }}
                                                             className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1d222c] text-[#1d222c] transition group-hover:bg-[#1d222c] group-hover:text-white"
