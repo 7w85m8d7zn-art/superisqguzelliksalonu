@@ -54,7 +54,7 @@ export function FeaturedGrid({
                 >
                   <Link href={`/urun/${product.slug}`} className="group block">
                     <article className="overflow-hidden rounded-3xl border border-[#d8d8d6] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_18px_44px_rgba(0,0,0,0.12)]">
-                      <div className="relative h-80 border-b border-[#ecebe9] bg-[#f6f6f4]">
+                      <div className="relative aspect-[4/3] border-b border-[#ecebe9] bg-[#f6f6f4]">
                         {previewImage ? (
                           <Image
                             src={previewImage}
@@ -63,7 +63,7 @@ export function FeaturedGrid({
                             unoptimized
                             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                             quality={100}
-                            className="object-contain p-2"
+                            className="object-cover object-center"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-sm text-gray-500">Görsel Yok</div>
