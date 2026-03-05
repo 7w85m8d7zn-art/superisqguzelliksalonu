@@ -418,7 +418,7 @@ export function KoleksiyonClient({
                                         >
                                             <Link href={`/urun/${product.slug}`} className="group block">
                                                 <article className="cursor-pointer overflow-hidden rounded-3xl border border-[#d8d8d6] bg-white p-3 shadow-[0_10px_28px_rgba(0,0,0,0.06)] transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_18px_42px_rgba(0,0,0,0.12)]">
-                                                    <div className="relative mb-4 h-80 overflow-hidden rounded-2xl border border-[#d8d8d6] bg-[#f5f5f3]">
+                                                    <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl border border-[#d8d8d6] bg-[#f5f5f3]">
                                                         {previewImage ? (
                                                             <Image
                                                                 src={previewImage}
@@ -427,7 +427,7 @@ export function KoleksiyonClient({
                                                                 unoptimized
                                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                                 quality={100}
-                                                                className="object-contain p-2 transition-transform duration-300 group-hover:scale-[1.02]"
+                                                                className="object-cover object-center transition-transform duration-300 group-hover:scale-[1.02]"
                                                             />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-gray-400">
