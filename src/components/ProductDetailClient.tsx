@@ -52,7 +52,7 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
         <div className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div className="rounded-3xl border border-[#d8d8d6] bg-white p-4 shadow-[0_14px_40px_rgba(0,0,0,0.08)]">
-              <div className="relative mb-4 h-96 overflow-hidden rounded-2xl border border-[#e3e3e0] bg-[#f4f4f2] md:h-[520px]">
+              <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl border border-[#e3e3e0] bg-[#f4f4f2]">
                 {mainImage ? (
                   <Image
                     src={mainImage}
@@ -62,7 +62,7 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                     unoptimized
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     quality={100}
-                    className="rounded-xl object-contain p-2"
+                    className="rounded-xl object-cover object-center"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-gray-500">Görsel Yok</div>
@@ -87,7 +87,7 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                       unoptimized
                       sizes="96px"
                       quality={100}
-                      className="bg-[#f4f4f2] object-contain p-1"
+                      className="bg-[#f4f4f2] object-cover object-center"
                     />
                   </button>
                 ))}
@@ -162,7 +162,7 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                                 unoptimized
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                                 quality={100}
-                                className="rounded-md object-contain p-1"
+                                className="rounded-md object-cover object-center"
                               />
                             ) : (
                               <div className="flex h-full w-full items-center justify-center text-gray-500">Görsel Yok</div>
