@@ -186,11 +186,10 @@ export default function NewProductPage() {
           {/* Fiyat */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Başlangıç Fiyatı (₺) <span className="text-red-500">*</span>
+              Başlangıç Fiyatı (₺)
             </label>
             <input
               type="number"
-              required
               min="0"
               step="0.01"
               value={formData.price_from}
