@@ -26,6 +26,7 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
 
   const images = (product.images || []).filter((image) => typeof image === 'string' && image.trim().length > 0)
   const mainImage = images[selectedImage] || null
+  const hasPrice = Number(product.priceFrom) > 0
 
   const getFirstValidImage = (productImages: string[] | undefined) => {
     if (!Array.isArray(productImages)) return null
@@ -51,16 +52,17 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
         <div className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div className="rounded-3xl border border-[#d8d8d6] bg-white p-4 shadow-[0_14px_40px_rgba(0,0,0,0.08)]">
-              <div className="relative mb-4 h-96 overflow-hidden rounded-2xl border border-[#e3e3e0] bg-[#f4f4f2] p-2 md:h-[520px]">
+              <div className="relative mb-4 h-96 overflow-hidden rounded-2xl border border-[#e3e3e0] bg-[#f4f4f2] md:h-[520px]">
                 {mainImage ? (
                   <Image
                     src={mainImage}
                     alt={product.name}
                     fill
                     priority
+                    unoptimized
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    quality={76}
-                    className="rounded-xl object-contain p-2"
+                    quality={100}
+                    className="rounded-xl object-cover"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-gray-500">Görsel Yok</div>
@@ -82,9 +84,10 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                       src={image}
                       alt={`${product.name} ${index + 1}`}
                       fill
+                      unoptimized
                       sizes="96px"
-                      quality={62}
-                      className="bg-[#f4f4f2] object-contain p-1"
+                      quality={100}
+                      className="bg-[#f4f4f2] object-cover"
                     />
                   </button>
                 ))}
@@ -101,9 +104,11 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                   ))}
                 </div>
 
-                <p className="text-3xl font-serif font-semibold text-[#12151b]">₺{product.priceFrom.toLocaleString('tr-TR')}</p>
+                {hasPrice ? (
+                  <p className="text-3xl font-serif font-semibold text-[#12151b]">₺{product.priceFrom.toLocaleString('tr-TR')}</p>
+                ) : null}
 
-                <div className="mt-6 rounded-2xl border border-[#e2e2df] bg-[#f7f6f4] p-4">
+                <div className={`${hasPrice ? 'mt-6' : 'mt-2'} rounded-2xl border border-[#e2e2df] bg-[#f7f6f4] p-4`}>
                   <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#2f3949]">Hizmet Detayları</h3>
                   <ul className="space-y-2 text-sm text-[#5f6670]">
                     {serviceDetails.map((detail, index) => (
@@ -154,9 +159,10 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                                 src={relatedImage}
                                 alt={relatedProduct.name}
                                 fill
+                                unoptimized
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                                quality={65}
-                                className="rounded-md object-contain p-2"
+                                quality={100}
+                                className="rounded-md object-cover"
                               />
                             ) : (
                               <div className="flex h-full w-full items-center justify-center text-gray-500">Görsel Yok</div>
@@ -165,7 +171,9 @@ export function ProductDetailClient({ product, allProducts, contactNumbers }: Pr
                           <h3 className="text-sm font-serif font-semibold uppercase tracking-[0.03em] text-[#161a22] transition group-hover:text-[#323c4b]">
                             {relatedProduct.name}
                           </h3>
-                          <p className="mt-1 text-sm text-[#3f4857]">₺{relatedProduct.priceFrom.toLocaleString('tr-TR')}</p>
+                          {Number(relatedProduct.priceFrom) > 0 ? (
+                            <p className="mt-1 text-sm text-[#3f4857]">₺{relatedProduct.priceFrom.toLocaleString('tr-TR')}</p>
+                          ) : null}
                         </article>
                       </Link>
                     </motion.div>
