@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -11,6 +11,7 @@ interface Product {
   price_from?: string
   priceFrom?: number
   images?: string[]
+  tags?: string[]
   category?: string
   featured?: boolean
 }
@@ -18,29 +19,13 @@ interface Product {
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [search, setSearch] = useState('')
+  const [selectedTag, setSelectedTag] = useState('')
   const [loading, setLoading] = useState(true)
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
 
   useEffect(() => {
     fetchProducts()
   }, [])
-
-  const DELETED_PRODUCTS_KEY = 'deleted_product_ids'
-
-  // Silinmiş Model ID'lerini al
-  function getDeletedIds(): string[] {
-    const stored = localStorage.getItem(DELETED_PRODUCTS_KEY)
-    return stored ? JSON.parse(stored) : []
-  }
-
-  // Silinmiş Model ID'si ekle
-  function addDeletedId(id: string) {
-    const deleted = getDeletedIds()
-    if (!deleted.includes(id)) {
-      deleted.push(id)
-      localStorage.setItem(DELETED_PRODUCTS_KEY, JSON.stringify(deleted))
-    }
-  }
 
   async function fetchProducts() {
     setLoading(true)
@@ -87,9 +72,26 @@ export default function ProductsPage() {
     setDeleteLoading(null)
   }
 
-  const filtered = products.filter((p) =>
-    (p.title || p.name || '').toLowerCase().includes(search.toLowerCase())
-  )
+  const allTags = useMemo(() => {
+    return Array.from(
+      new Set(
+        products
+          .flatMap((product) => (Array.isArray(product.tags) ? product.tags : []))
+          .map((tag) => tag.trim())
+          .filter((tag) => tag.length > 0)
+      )
+    )
+  }, [products])
+
+  const filtered = products.filter((p) => {
+    const productTags = Array.isArray(p.tags) ? p.tags : []
+    const matchesSearch = (p.title || p.name || '').toLowerCase().includes(search.toLowerCase())
+    const matchesTag =
+      selectedTag.length === 0 ||
+      productTags.some((tag) => tag.toLowerCase() === selectedTag.toLowerCase())
+
+    return matchesSearch && matchesTag
+  })
 
   return (
     <section className="mx-auto max-w-6xl">
@@ -130,6 +132,37 @@ export default function ProductsPage() {
         </div>
       </div>
 
+      {/* Tags Filter */}
+      {allTags.length > 0 && (
+        <div className="mb-5 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setSelectedTag('')}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
+              selectedTag.length === 0
+                ? 'border-black bg-black text-white'
+                : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+            }`}
+          >
+            Tüm Etiketler
+          </button>
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => setSelectedTag(tag)}
+              className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                selectedTag === tag
+                  ? 'border-black bg-black text-white'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Products Grid */}
       {loading ? (
         <div className="flex items-center justify-center h-64">
@@ -150,7 +183,7 @@ export default function ProductsPage() {
             Henüz Model yok
           </h3>
           <p className="text-gray-500 mb-6">
-            İlk Modelnüzü eklemek için "Yeni Model" butonuna tıklayın
+            İlk Modelnüzü eklemek için &quot;Yeni Model&quot; butonuna tıklayın
           </p>
           <Link
             href="/admin/products/new"
@@ -252,6 +285,15 @@ export default function ProductsPage() {
                   <h3 className="line-clamp-1 text-sm font-semibold text-gray-900">
                     {p.title || p.name || 'İsimsiz Model'}
                   </h3>
+                  {Array.isArray(p.tags) && p.tags.length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {p.tags.slice(0, 3).map((tag) => (
+                        <span key={`${p.id}-${tag}`} className="rounded-full border border-gray-300 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <p className="mt-0.5 text-base font-bold text-gray-900">
                     ₺{Number(p.price_from || p.priceFrom || 0).toLocaleString('tr-TR')}
                   </p>
@@ -269,11 +311,18 @@ export default function ProductsPage() {
           <p>
             Toplam <span className="font-semibold text-gray-900">{filtered.length}</span> Model gösteriliyor
           </p>
-          {search && (
-            <p>
-              "<span className="font-semibold">{search}</span>" için arama sonuçları
-            </p>
-          )}
+          <div className="flex flex-col gap-1 sm:items-end">
+            {search && (
+              <p>
+                &quot;<span className="font-semibold">{search}</span>&quot; için arama sonuçları
+              </p>
+            )}
+            {selectedTag && (
+              <p>
+                Etiket filtresi: <span className="font-semibold">{selectedTag}</span>
+              </p>
+            )}
+          </div>
         </div>
       )}
     </section>

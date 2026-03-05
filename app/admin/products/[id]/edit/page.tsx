@@ -13,6 +13,25 @@ interface Filter {
   active: boolean
 }
 
+interface ApiProduct {
+  id: string
+  title?: string
+  name?: string
+  price_from?: string | number
+  priceFrom?: number
+  description?: string
+  service_details?: string[]
+  category?: string
+  colors?: string[]
+  tags?: string[]
+  images?: string[]
+  featured?: boolean
+}
+
+const DEFAULT_CATEGORIES = ['Özel Dikim', 'Kiralama', 'Hazır Giyim', 'Aksesuar']
+const DEFAULT_COLORS = ['Beyaz', 'Krem', 'Pudra', 'Gümüş', 'Peach', 'Altın']
+const DEFAULT_TAGS = ['Topuz', 'Kesim', 'Dalga', 'Düzleştirme', 'Renklendirme', 'Özel Gün', 'Günlük', 'Bukle', 'Bohem', 'Bakım', 'Özel']
+
 export default function EditProductPage() {
   const router = useRouter()
   const params = useParams()
@@ -38,6 +57,7 @@ export default function EditProductPage() {
   })
 
   const hasLegacyInlineImages = formData.images.some((image) => image.trim().startsWith('data:image/'))
+  const availableTags = Array.from(new Set([...tags, ...formData.tags]))
 
   // Filtreleri ve Model, çek
   useEffect(() => {
@@ -45,17 +65,29 @@ export default function EditProductPage() {
     if (stored) {
       try {
         const parsed: Filter[] = JSON.parse(stored)
-        const categoryFilter = parsed.find(f => f.type === 'category' && f.active)
-        setCategories(categoryFilter?.values || ['Topuz', 'Özel Gün', 'Kesim', 'Günlük', 'Bukle', 'Renklendirme', 'Dalga', 'Bahem', 'Düzleştirme', 'Bakım', 'Özel'])
-        
-        const colorFilter = parsed.find(f => f.type === 'color' && f.active)
-        setColors(colorFilter?.values || ['Beyaz', 'Krem', 'Pudra', 'Gümüş', 'Peach', 'Altın'])
-        
-        const tagFilters = parsed.filter(f => f.type === 'tag' && f.active)
-        setTags(tagFilters.flatMap(f => f.values))
+        const categoryValues = parsed
+          .filter((filter) => filter.type === 'category' && filter.active)
+          .flatMap((filter) => filter.values)
+        const colorValues = parsed
+          .filter((filter) => filter.type === 'color' && filter.active)
+          .flatMap((filter) => filter.values)
+        const tagValues = parsed
+          .filter((filter) => filter.type === 'tag' && filter.active)
+          .flatMap((filter) => filter.values)
+
+        setCategories(categoryValues.length > 0 ? categoryValues : DEFAULT_CATEGORIES)
+        setColors(colorValues.length > 0 ? colorValues : DEFAULT_COLORS)
+        setTags(tagValues.length > 0 ? tagValues : DEFAULT_TAGS)
       } catch (e) {
         console.error(e)
+        setCategories(DEFAULT_CATEGORIES)
+        setColors(DEFAULT_COLORS)
+        setTags(DEFAULT_TAGS)
       }
+    } else {
+      setCategories(DEFAULT_CATEGORIES)
+      setColors(DEFAULT_COLORS)
+      setTags(DEFAULT_TAGS)
     }
 
     // Model, çek
@@ -65,10 +97,12 @@ export default function EditProductPage() {
   async function fetchProduct() {
     try {
       const res = await fetch('/api/products')
-      const products = await res.json()
-      const product = products.find((p: any) => p.id === productId)
+      const products = (await res.json()) as ApiProduct[]
+      const product = products.find((p) => p.id === productId)
       
       if (product) {
+        const productTags = Array.isArray(product.tags) ? product.tags : []
+
         setFormData({
           title: product.title || product.name || '',
           price_from: (product.price_from || product.priceFrom || 0).toString(),
@@ -76,10 +110,14 @@ export default function EditProductPage() {
           service_details: Array.isArray(product.service_details) ? product.service_details.join('\n') : '',
           category: product.category || '',
           colors: product.colors || [],
-          tags: product.tags || [],
+          tags: productTags,
           images: product.images?.length ? product.images : [''],
           featured: product.featured || false,
         })
+
+        if (productTags.length > 0) {
+          setTags((prev) => Array.from(new Set([...prev, ...productTags])))
+        }
       }
     } catch (e) {
       console.error('Model çekme hatası:', e)
@@ -281,6 +319,36 @@ export default function EditProductPage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Etiket Seçimi */}
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Etiketler</label>
+            {availableTags.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {availableTags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => {
+                      const newTags = formData.tags.includes(tag)
+                        ? formData.tags.filter((item) => item !== tag)
+                        : [...formData.tags, tag]
+                      setFormData({ ...formData, tags: newTags })
+                    }}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                      formData.tags.includes(tag)
+                        ? 'bg-black text-white border-black'
+                        : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-gray-500">Önce admin filtrelerinden etiket tanımlayın.</p>
+            )}
           </div>
 
           {/* Açıklama */}
