@@ -7,7 +7,6 @@ import Image from 'next/image'
 import { StickyButtons } from '@/src/components/StickyButtons'
 import { PageHero } from '@/src/components/PageHero'
 import { ContactNumbers, Product } from '@/src/types'
-import { slugifySegment } from '@/src/lib/seo'
 
 type SortOption = 'featured' | 'price-low' | 'price-high' | 'newest'
 
@@ -383,31 +382,6 @@ export function KoleksiyonClient({
                                     </select>
                                 </div>
                             </div>
-
-                            {/* SEO Tag Links */}
-                            {allTags.length > 0 && (
-                                <div className="mb-8 rounded-2xl border border-[#d8d8d6] bg-white px-4 py-4">
-                                    <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#596270]">
-                                        Kırşehir Hizmet Etiketleri
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {allTags.map((tag) => {
-                                            const tagSlug = slugifySegment(tag)
-                                            if (!tagSlug) return null
-
-                                            return (
-                                                <Link
-                                                    key={tag}
-                                                    href={`/koleksiyonlar/etiket/${tagSlug}`}
-                                                    className="rounded-full border border-[#cfd2d7] bg-white px-3 py-1.5 text-xs font-semibold text-[#2f3949] transition-colors hover:border-[#111319] hover:text-[#111319]"
-                                                >
-                                                    Kırşehir {tag}
-                                                </Link>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-                            )}
 
                             {/* Products Grid */}
                             {products.length === 0 ? (
